@@ -76,58 +76,58 @@ return {
     })
     
     -- Enable treesitter-based folding with performance guards
-    local function setup_treesitter_folding()
-      vim.api.nvim_create_autocmd('FileType', {
-        pattern = parsers, -- Use same parser list as highlighting
-        callback = function(args)
-          local bufnr = args.buf
-          
-          -- Skip folding for big files
-          if is_big_file(bufnr) then
-            return
-          end
-          
-          -- Only enable for files with reasonable complexity
-          local line_count = vim.api.nvim_buf_line_count(bufnr)
-          if line_count < 50 or line_count > 5000 then
-            return
-          end
-          
-          -- Set up treesitter folding
-          vim.wo.foldmethod = 'expr'
-          vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-          vim.wo.foldlevel = 99 -- Start with all folds open
-          vim.wo.foldlevelstart = 99 -- Start with all folds open for new files
-          
-          -- Configure fold display
-          vim.wo.foldcolumn = '1' -- Show fold column
-          vim.wo.fillchars = vim.wo.fillchars .. ',fold: ,foldopen:,foldsep:│,foldclose:'
-          
-          -- Smart fold opening for better UX
-          vim.api.nvim_create_autocmd({ 'BufReadPost', 'FileReadPost' }, {
-            buffer = bufnr,
-            callback = function()
-              -- Open all folds on file read
-              vim.defer_fn(function()
-                pcall(vim.cmd.normal, 'zR')
-              end, 100)
-            end,
-          })
-          
-          -- Keymaps for folding (only set for buffers with folding enabled)
-          local opts = { buffer = bufnr, silent = true }
-          vim.keymap.set('n', 'zC', 'zM', vim.tbl_extend('force', opts, { desc = 'Close all folds' }))
-          vim.keymap.set('n', 'zO', 'zR', vim.tbl_extend('force', opts, { desc = 'Open all folds' }))
-          vim.keymap.set('n', 'z1', function() vim.wo.foldlevel = 1 end, vim.tbl_extend('force', opts, { desc = 'Fold level 1' }))
-          vim.keymap.set('n', 'z2', function() vim.wo.foldlevel = 2 end, vim.tbl_extend('force', opts, { desc = 'Fold level 2' }))
-          vim.keymap.set('n', 'z3', function() vim.wo.foldlevel = 3 end, vim.tbl_extend('force', opts, { desc = 'Fold level 3' }))
-          vim.keymap.set('n', 'z4', function() vim.wo.foldlevel = 4 end, vim.tbl_extend('force', opts, { desc = 'Fold level 4' }))
-          vim.keymap.set('n', 'z5', function() vim.wo.foldlevel = 5 end, vim.tbl_extend('force', opts, { desc = 'Fold level 5' }))
-        end,
-      })
-    end
-    
-    setup_treesitter_folding()
+    -- local function setup_treesitter_folding()
+    --   vim.api.nvim_create_autocmd('FileType', {
+    --     pattern = parsers, -- Use same parser list as highlighting
+    --     callback = function(args)
+    --       local bufnr = args.buf
+    --       
+    --       -- Skip folding for big files
+    --       if is_big_file(bufnr) then
+    --         return
+    --       end
+    --       
+    --       -- Only enable for files with reasonable complexity
+    --       local line_count = vim.api.nvim_buf_line_count(bufnr)
+    --       if line_count < 50 or line_count > 5000 then
+    --         return
+    --       end
+    --       
+    --       -- Set up treesitter folding
+    --       vim.wo.foldmethod = 'expr'
+    --       vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+    --       vim.wo.foldlevel = 99 -- Start with all folds open
+    --       vim.o.foldlevelstart = 99 -- Start with all folds open for new files
+    --       
+    --       -- Configure fold display
+    --       vim.wo.foldcolumn = '1' -- Show fold column
+    --       vim.wo.fillchars = vim.wo.fillchars .. ',fold: ,foldopen:,foldsep:│,foldclose:'
+    --       
+    --       -- Smart fold opening for better UX
+    --       vim.api.nvim_create_autocmd({ 'BufReadPost', 'FileReadPost' }, {
+    --         buffer = bufnr,
+    --         callback = function()
+    --           -- Open all folds on file read
+    --           vim.defer_fn(function()
+    --             pcall(vim.cmd.normal, 'zR')
+    --           end, 100)
+    --         end,
+    --       })
+    --       
+    --       -- Keymaps for folding (only set for buffers with folding enabled)
+    --       local opts = { buffer = bufnr, silent = true }
+    --       vim.keymap.set('n', 'zC', 'zM', vim.tbl_extend('force', opts, { desc = 'Close all folds' }))
+    --       vim.keymap.set('n', 'zO', 'zR', vim.tbl_extend('force', opts, { desc = 'Open all folds' }))
+    --       vim.keymap.set('n', 'z1', function() vim.wo.foldlevel = 1 end, vim.tbl_extend('force', opts, { desc = 'Fold level 1' }))
+    --       vim.keymap.set('n', 'z2', function() vim.wo.foldlevel = 2 end, vim.tbl_extend('force', opts, { desc = 'Fold level 2' }))
+    --       vim.keymap.set('n', 'z3', function() vim.wo.foldlevel = 3 end, vim.tbl_extend('force', opts, { desc = 'Fold level 3' }))
+    --       vim.keymap.set('n', 'z4', function() vim.wo.foldlevel = 4 end, vim.tbl_extend('force', opts, { desc = 'Fold level 4' }))
+    --       vim.keymap.set('n', 'z5', function() vim.wo.foldlevel = 5 end, vim.tbl_extend('force', opts, { desc = 'Fold level 5' }))
+    --     end,
+    --   })
+    -- end
+    -- 
+    -- setup_treesitter_folding()
 
     -- Configure plugins that depend on treesitter
     -- Skip deprecated context_commentstring integration

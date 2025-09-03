@@ -363,12 +363,12 @@ return { -- Enhanced which-key with comprehensive documentation and visual impro
       { '@', desc = '󰑭 Execute Macro' },
       { 'q', desc = '󰑬 Record Macro' },
       
-      -- Fold operations
-      { 'za', desc = '󰘖 Toggle Fold' },
-      { 'zc', desc = '󰘕 Close Fold' },
-      { 'zo', desc = '󰘗 Open Fold' },
-      { 'zM', desc = '󰘕 Close All Folds' },
-      { 'zR', desc = '󰘗 Open All Folds' },
+      -- Fold operations (disabled due to treesitter folding being commented out)
+      -- { 'za', desc = '󰘖 Toggle Fold' },
+      -- { 'zc', desc = '󰘕 Close Fold' },
+      -- { 'zo', desc = '󰘗 Open Fold' },
+      -- { 'zM', desc = '󰘕 Close All Folds' },
+      -- { 'zR', desc = '󰘗 Open All Folds' },
       
       -- Mark operations
       { 'm', desc = '󰃃 Set Mark' },
