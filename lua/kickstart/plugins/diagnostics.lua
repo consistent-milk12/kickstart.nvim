@@ -38,7 +38,7 @@ return {
   -- Enhanced diagnostic navigation and viewing
   {
     'folke/trouble.nvim',
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    dependencies = { 'nvim-tree/nvim-web-devicons', 'echasnovski/mini.icons' },
     cmd = 'Trouble',
     keys = {
       {
