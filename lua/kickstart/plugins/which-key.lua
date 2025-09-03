@@ -115,13 +115,13 @@ return { -- Enhanced which-key with comprehensive group documentation
       { '<leader>bp', desc = 'Previous' },
       { '<leader>bl', desc = 'List' },
       
-      -- Window/Split operations
-      { '<leader>s', group = ' Splits', icon = '', mode = 'n' },
-      { '<leader>sh', desc = 'Horizontal' },
-      { '<leader>sv', desc = 'Vertical' },
-      { '<leader>sc', desc = 'Close' },
-      { '<leader>so', desc = 'Only This' },
-      { '<leader>se', desc = 'Equalize' },
+      -- Window operations (moved from <leader>s* to avoid search conflict)
+      { '<leader>w', group = ' Windows', icon = '' },
+      { '<leader>wh', desc = 'Horizontal Split' },
+      { '<leader>wv', desc = 'Vertical Split' },
+      { '<leader>wc', desc = 'Close' },
+      { '<leader>wo', desc = 'Only This' },
+      { '<leader>we', desc = 'Equalize' },
       
       -- Undotree
       { '<leader>u', desc = '󰕌 Undo Tree', icon = '󰕌' },
@@ -130,13 +130,22 @@ return { -- Enhanced which-key with comprehensive group documentation
       { ']', group = ' Next' },
       { ']c', desc = 'Git Hunk' },
       { ']C', desc = 'Last Git Hunk' },
+      { ']m', desc = 'Function' },
+      { ']M', desc = 'Function End' },
+      { ']k', desc = 'Class' },
+      { ']K', desc = 'Class End' },
+      { ']a', desc = 'Parameter' },
       
       { '[', group = ' Previous' },
       { '[c', desc = 'Git Hunk' },
       { '[C', desc = 'First Git Hunk' },
+      { '[m', desc = 'Function' },
+      { '[M', desc = 'Function End' },
+      { '[k', desc = 'Class' },
+      { '[K', desc = 'Class End' },
+      { '[a', desc = 'Parameter' },
       
-      -- LSP operations (when available)
-      { 'g', group = ' Goto' },
+      -- LSP operations (integrated with enhanced g group above)
       { 'gr', group = ' References/Rename' },
       { 'grn', desc = 'Rename' },
       { 'gra', desc = 'Code Action' },
@@ -154,6 +163,72 @@ return { -- Enhanced which-key with comprehensive group documentation
       -- Telescope Oil integration
       { '<M-o>', desc = 'Reveal in Oil', mode = { 'n', 'i' } },
       { '<M-O>', desc = 'Open Dir in Oil', mode = { 'n', 'i' } },
+      
+      -- Enhanced g operations (LSP + Treesitter + Flash)
+      { 'g', group = ' Goto & Actions' },
+      { 'g>', desc = 'Swap Next Parameter' },
+      { 'g<', desc = 'Swap Prev Parameter' },
+      
+      -- Flash.nvim navigation
+      { 's', desc = '⚡ Flash Jump', mode = { 'n', 'x', 'o' } },
+      { 'S', desc = '⚡ Flash Treesitter', mode = { 'n', 'x', 'o' } },
+      { 'r', desc = '⚡ Flash Remote', mode = 'o' },
+      { 'R', desc = '⚡ Flash TS Search', mode = { 'o', 'x' } },
+      
+      -- Treesitter incremental selection
+      { '<C-Space>', desc = 'TS: Init/Expand Selection', mode = { 'n', 'v' } },
+      { '<C-s>', desc = 'TS: Expand Scope', mode = { 'v' } },
+      { '<BS>', desc = 'TS: Shrink Selection', mode = { 'v' } },
+      
+      -- Treesitter text objects (visual/operator-pending)
+      { 'a', group = ' Around Text Objects', mode = { 'v', 'o' } },
+      { 'af', desc = 'Function', mode = { 'v', 'o' } },
+      { 'ac', desc = 'Class', mode = { 'v', 'o' } },
+      { 'aa', desc = 'Parameter', mode = { 'v', 'o' } },
+      { 'al', desc = 'Loop', mode = { 'v', 'o' } },
+      { 'ai', desc = 'Conditional', mode = { 'v', 'o' } },
+      
+      { 'i', group = ' Inside Text Objects', mode = { 'v', 'o' } },
+      { 'if', desc = 'Function', mode = { 'v', 'o' } },
+      { 'ic', desc = 'Class', mode = { 'v', 'o' } },
+      { 'ia', desc = 'Parameter', mode = { 'v', 'o' } },
+      { 'il', desc = 'Loop', mode = { 'v', 'o' } },
+      { 'ii', desc = 'Conditional', mode = { 'v', 'o' } },
+      
+      -- Flash.nvim search integration (command mode)
+      { '<A-f>', desc = '⚡ Toggle Flash in Search', mode = 'c' },
+      
+      -- Noice.nvim UI enhancements  
+      { '<leader>n', group = ' Noice', icon = '' },
+      { '<leader>nl', desc = 'Last Message' },
+      { '<leader>nh', desc = 'Message History' },
+      { '<leader>nd', desc = 'Dismiss All' },
+      { '<leader>ns', desc = 'Search Messages' },
+      
+      -- Enhanced cmdline (command mode)
+      { '<S-Enter>', desc = ' Redirect to Split', mode = 'c' },
+      
+      -- Language-aware code operations (Rust/Python/Lua + advanced formatting)
+      { '<leader>c', group = ' Code', icon = '' },
+      { '<leader>cf', desc = 'Format Buffer/Selection', mode = { 'n', 'x' } },
+      { '<leader>cr', desc = 'Run (language-aware)' },
+      { '<leader>ct', desc = 'Test (language-aware)' },
+      { '<leader>cF', desc = 'Toggle Format-on-save' },
+      { '<leader>cI', desc = 'Conform Info' },
+      
+      -- Enhanced quickfix workflow (Quicker.nvim)
+      { '<leader>q', group = ' Quickfix', icon = '' },
+      { '<leader>qq', desc = 'Toggle Quickfix' },
+      { '<leader>ql', desc = 'Toggle Location List' },
+      
+      -- Trouble.nvim diagnostics and navigation
+      { '<leader>x', group = ' Trouble', icon = '' },
+      { '<leader>xx', desc = 'Diagnostics' },
+      { '<leader>xX', desc = 'Buffer Diagnostics' },
+      { '<leader>xs', desc = 'Symbols' },
+      { '<leader>xl', desc = 'LSP References' },
+      { '<leader>xL', desc = 'Location List' },
+      { '<leader>xQ', desc = 'Quickfix List' },
     },
     
     -- Custom sorting for better organization

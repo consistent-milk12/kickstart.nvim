@@ -4,12 +4,32 @@ return {
     -- used for completion, annotations and signatures of Neovim apis
     'folke/lazydev.nvim',
     ft = 'lua',
+    -- Pin to specific commit until client.notify deprecation is fixed upstream
+    -- See: https://github.com/folke/lazydev.nvim/issues/114
+    version = false, -- Use HEAD for latest fixes
     opts = {
       library = {
         -- Load luvit types when the `vim.uv` word is found
         { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
       },
     },
+    config = function(_, opts)
+      -- Setup lazydev with opts
+      require('lazydev').setup(opts)
+      
+      -- Temporarily suppress client.notify deprecation warnings for lazydev
+      -- until upstream fix is merged
+      local original_notify = vim.notify
+      vim.notify = function(msg, level, opts_notify)
+        -- Filter out lazydev client.notify deprecation warnings
+        if type(msg) == 'string' and 
+           msg:match('client%.notify is deprecated') and
+           debug.getinfo(3, 'S').source:match('lazydev') then
+          return -- Suppress this specific deprecation warning
+        end
+        return original_notify(msg, level, opts_notify)
+      end
+    end,
   },
   {
     -- Main LSP Configuration

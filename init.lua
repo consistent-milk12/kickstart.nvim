@@ -173,8 +173,8 @@ vim.o.confirm = true
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
--- Diagnostic keymaps
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+-- Diagnostic keymaps (removed <leader>q - conflicts with quicker.nvim namespace)
+-- Use <leader>xx for diagnostics via Trouble.nvim instead
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -199,12 +199,12 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
--- Window splitting
-vim.keymap.set('n', '<leader>sh', '<C-w>s', { desc = '[S]plit [H]orizontal' })
-vim.keymap.set('n', '<leader>sv', '<C-w>v', { desc = '[S]plit [V]ertical' })
-vim.keymap.set('n', '<leader>sc', '<C-w>c', { desc = '[S]plit [C]lose' })
-vim.keymap.set('n', '<leader>so', '<C-w>o', { desc = '[S]plit [O]nly (close others)' })
-vim.keymap.set('n', '<leader>se', '<C-w>=', { desc = '[S]plit [E]qualize' })
+-- Window splitting (moved to <leader>w* to avoid conflict with search)
+vim.keymap.set('n', '<leader>wh', '<C-w>s', { desc = '[W]indow [H]orizontal split' })
+vim.keymap.set('n', '<leader>wv', '<C-w>v', { desc = '[W]indow [V]ertical split' })
+vim.keymap.set('n', '<leader>wc', '<C-w>c', { desc = '[W]indow [C]lose' })
+vim.keymap.set('n', '<leader>wo', '<C-w>o', { desc = '[W]indow [O]nly (close others)' })
+vim.keymap.set('n', '<leader>we', '<C-w>=', { desc = '[W]indow [E]qualize' })
 
 -- Window resizing
 vim.keymap.set('n', '<C-Up>', '<C-w>+', { desc = 'Increase window height' })
@@ -285,13 +285,15 @@ require('lazy').setup {
   -- Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   require 'kickstart.plugins.debug',
-  require 'kickstart.plugins.indent_line',
+  -- require 'kickstart.plugins.indent_line', -- Removed: now integrated in ui.lua
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree', -- Disabled in favor of oil.nvim
   require 'kickstart.plugins.oil',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
   require 'kickstart.plugins.neogit', -- modern git interface
+  require 'kickstart.plugins.flash', -- fast navigation with search labels
+  require 'kickstart.plugins.noice', -- enhanced UI for messages/cmdline/popupmenu
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.

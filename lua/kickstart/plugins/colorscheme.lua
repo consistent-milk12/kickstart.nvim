@@ -247,6 +247,40 @@ return {
           hl.OilFloatBorder = { fg = colors.border_highlight, bg = colors.bg_float }
           hl.OilFloatTitle = { fg = colors.blue, bg = colors.bg_float, bold = true }
           
+          -- ===== TREESITTER THEME INTEGRATION =====
+          
+          -- Treesitter Context (sticky header)
+          hl.TreesitterContext = { bg = colors.bg_dark, fg = colors.fg }
+          hl.TreesitterContextBottom = { sp = colors.border, underline = true }
+          hl.TreesitterContextLineNumber = { fg = colors.fg_gutter, bg = colors.bg_dark }
+          hl.TreesitterContextSeparator = { fg = colors.border }
+          
+          -- Rainbow Delimiters (commented out - plugin disabled)
+          -- hl.RainbowDelimiterRed = { fg = colors.red }
+          -- hl.RainbowDelimiterYellow = { fg = colors.yellow } 
+          -- hl.RainbowDelimiterBlue = { fg = colors.blue }
+          -- hl.RainbowDelimiterOrange = { fg = colors.orange }
+          -- hl.RainbowDelimiterGreen = { fg = colors.green }
+          -- hl.RainbowDelimiterViolet = { fg = colors.purple }
+          -- hl.RainbowDelimiterCyan = { fg = colors.cyan }
+          
+          -- Function Arguments Highlighting (hlargs)
+          hl.Hlargs = { fg = colors.yellow, italic = true, bold = false }
+          
+          -- Enhanced Treesitter semantic highlighting
+          hl.TSPunctBracket = { fg = colors.fg_dark }
+          hl.TSPunctDelimiter = { fg = colors.fg_dark }
+          hl.TSParameterReference = { fg = colors.yellow, italic = true }
+          hl.TSFuncBuiltin = { fg = colors.cyan, bold = true }
+          hl.TSTypeBuiltin = { fg = colors.blue, bold = true }
+          hl.TSVariableBuiltin = { fg = colors.red, italic = true }
+          
+          -- Matchup integration (enhanced % matching)  
+          hl.MatchParen = { fg = colors.orange, bold = true }
+          hl.MatchWord = { bg = colors.bg_visual }
+          hl.MatchParenCur = { bg = colors.bg_visual }
+          hl.MatchWordCur = { bg = colors.bg_visual }
+          
           -- Oil SSH support styling
           hl.OilSSH = { fg = colors.magenta, italic = true }
           hl.OilSSHDir = { fg = colors.magenta, bold = true }
@@ -263,6 +297,43 @@ return {
           
           -- Oil preview window
           hl.OilPreview = { bg = colors.bg_dark }
+          
+          -- ===== NOICE.NVIM + NVIM-NOTIFY THEME INTEGRATION =====
+          
+          -- Noice cmdline popup styling
+          hl.NoiceCmdlinePopup = { bg = colors.bg_popup, fg = colors.fg }
+          hl.NoiceCmdlinePopupBorder = { fg = colors.blue, bg = colors.bg_popup }
+          hl.NoiceCmdlinePopupTitle = { fg = colors.blue, bg = colors.bg_popup, bold = true }
+          hl.NoiceCmdlineIcon = { fg = colors.blue }
+          
+          -- Noice popup menu
+          hl.NoicePopupmenu = { bg = colors.bg_popup }
+          hl.NoicePopupmenuSelected = { bg = colors.bg_visual }
+          hl.NoicePopupmenuBorder = { fg = colors.border, bg = colors.bg_popup }
+          
+          -- Noice message views
+          hl.NoiceMini = { bg = colors.bg_statusline, fg = colors.fg }
+          hl.NoiceSplit = { bg = colors.bg_dark }
+          hl.NoiceSplitBorder = { fg = colors.border, bg = colors.bg_dark }
+          
+          -- Noice LSP documentation and hover
+          hl.NoiceLspProgressSpinner = { fg = colors.blue }
+          hl.NoiceLspProgressTitle = { fg = colors.fg, bold = true }
+          hl.NoiceLspProgressClient = { fg = colors.comment }
+          
+          -- Nvim-notify integration
+          hl.NotifyERROR = { fg = colors.error, bg = colors.bg_float }
+          hl.NotifyWARN = { fg = colors.warning, bg = colors.bg_float }
+          hl.NotifyINFO = { fg = colors.info, bg = colors.bg_float }
+          hl.NotifyDEBUG = { fg = colors.hint, bg = colors.bg_float }
+          hl.NotifyTRACE = { fg = colors.purple, bg = colors.bg_float }
+          hl.NotifyTITLE = { fg = colors.fg, bold = true }
+          hl.NotifyBorder = { fg = colors.border, bg = colors.bg_float }
+          hl.NotifyBackground = { bg = colors.bg_float }
+          
+          -- Noice confirm/input dialogs
+          hl.NoiceConfirm = { bg = colors.bg_popup, fg = colors.fg }
+          hl.NoiceConfirmBorder = { fg = colors.yellow, bg = colors.bg_popup }
           hl.OilPreviewBorder = { fg = colors.border, bg = colors.bg_dark }
         end,
 

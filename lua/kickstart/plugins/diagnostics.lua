@@ -10,17 +10,17 @@ return {
         options = {
           -- Show source if there are multiple diagnostic sources
           show_source = false,
-          -- Throttle diagnostic updates for performance
-          throttle = 20,
+          -- Improved throttle for better performance (was too aggressive at 20)
+          throttle = 100,
           -- Only show errors and warnings by default
           severity = {
             vim.diagnostic.severity.ERROR,
             vim.diagnostic.severity.WARN,
           },
-          -- Enable multiline diagnostic messages
-          multilines = true,
-          -- Show all diagnostics on the line
-          show_all_diags_on_cursorline = true,
+          -- Enable multiline diagnostic messages (but can be noisy)
+          multilines = false,
+          -- Show all diagnostics on the line (can be overwhelming)
+          show_all_diags_on_cursorline = false,
         },
         signs = {
           left = ' ',
@@ -38,7 +38,9 @@ return {
   -- Enhanced diagnostic navigation and viewing
   {
     'folke/trouble.nvim',
-    dependencies = { 'echasnovski/mini.icons' },
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+    },
     cmd = 'Trouble',
     keys = {
       {
@@ -52,12 +54,12 @@ return {
         desc = 'Buffer Diagnostics (Trouble)',
       },
       {
-        '<leader>cs',
+        '<leader>xs',
         '<cmd>Trouble symbols toggle focus=false<cr>',
         desc = 'Symbols (Trouble)',
       },
       {
-        '<leader>cl',
+        '<leader>xl',
         '<cmd>Trouble lsp toggle focus=false win.position=right<cr>',
         desc = 'LSP Definitions / references / ... (Trouble)',
       },
@@ -73,42 +75,67 @@ return {
       },
     },
     config = function()
+      -- Completely disable treesitter to prevent decoration provider errors
+      local ok, ts = pcall(require, 'nvim-treesitter')
+      if ok then
+        -- Temporarily disable treesitter highlight for trouble buffers
+        vim.api.nvim_create_autocmd('FileType', {
+          pattern = 'trouble',
+          callback = function()
+            vim.treesitter.stop()
+          end,
+        })
+      end
+
       require('trouble').setup {
-        -- Automatically close trouble when there are no items
-        auto_close = true,
-        -- Automatically focus the trouble window when opened
-        focus = true,
-        -- Follow the cursor in the trouble window
-        follow = true,
-        -- Show indent guides for nested items
-        indent_guides = true,
-        -- Maximum height for the trouble window
-        max_items = 200,
-        -- Disable treesitter integration to prevent errors
-        use_diagnostic_signs = true,
-        -- Window configuration
+        -- Window and behavior settings
+        auto_close = false, -- Don't auto-close to reduce flicker
+        auto_open = false, -- Don't auto-open to reduce errors
+        auto_preview = false, -- Disable auto-preview to reduce treesitter calls
+        auto_refresh = false, -- Manual refresh to avoid spam
+        focus = false, -- Don't auto-focus to reduce errors
+        follow = false, -- Don't follow cursor to reduce treesitter calls
+
+        -- Performance settings
+        max_items = 200, -- Increased back for functionality
+        multiline = false, -- Disable multiline to avoid treesitter parsing
+
+        -- Completely disable treesitter integration
+        use_diagnostic_signs = false, -- Don't use diagnostic signs
+
+        -- Simple window configuration
         win = {
-          border = 'rounded',
-          size = { height = 0.3 },
+          border = 'single', -- Use simple border
+          size = { height = 0.25 },
         },
-        -- Configure preview window
+
+        -- Disable preview to avoid treesitter issues
         preview = {
-          type = 'split',
-          relative = 'win',
-          position = 'right',
-          size = 0.3,
+          type = 'main',
+          scratch = true,
         },
-        -- Integration with telescope
+
+        -- Simple modes configuration without treesitter features
         modes = {
           diagnostics = {
-            groups = {
-              { 'filename', format = '{file_icon} {basename:Title} {count}' },
-            },
+            groups = {},
+            format = '{severity_icon} {filename} {pos}: {message}',
           },
         },
-        -- Disable treesitter decorations that may cause errors
+
+        -- Completely disable all treesitter-related features
         decorations = {
           treesitter = false,
+        },
+
+        -- Disable any treesitter-based rendering
+        render = {
+          max_value = 999,
+          indent = {
+            top = 0,
+            middle = '',
+            last = '',
+          },
         },
       }
     end,

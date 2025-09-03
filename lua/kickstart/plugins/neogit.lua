@@ -221,11 +221,10 @@ return {
         finder = {
           ['<C-j>'] = 'Next',
           ['<C-k>'] = 'Previous',
-          ['<C-x>'] = 'Split',
-          ['<C-v>'] = 'VSplit',
-          ['<C-t>'] = 'Tabnew',
           ['<cr>'] = 'Select',
           ['<esc>'] = 'Close',
+          -- Removed invalid finder commands: Split, VSplit, Tabnew
+          -- These are only available in status mappings, not finder
         },
         popup = {
           ['?'] = 'HelpPopup',
