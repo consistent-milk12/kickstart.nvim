@@ -42,8 +42,7 @@ return {
             },
           }
           -- Exit visual mode after formatting
-          vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(
-            '<Esc>', true, false, true), 'n', false)
+          vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
         end,
         mode = { 'x' },
         desc = '[C]ode [F]ormat selection',
@@ -55,15 +54,15 @@ return {
         function()
           local ft = vim.bo.filetype
           if ft == 'rust' then
-            vim.cmd('!cargo run')
+            vim.cmd '!cargo run'
           elseif ft == 'python' then
-            vim.cmd('!python %')
+            vim.cmd '!python %'
           elseif ft == 'lua' then
-            if vim.fn.expand('%:p'):match(vim.fn.stdpath('config')) then
-              vim.cmd('source %')
-              vim.notify('Sourced ' .. vim.fn.expand('%:t'))
+            if vim.fn.expand('%:p'):match(vim.fn.stdpath 'config') then
+              vim.cmd 'source %'
+              vim.notify('Sourced ' .. vim.fn.expand '%:t')
             else
-              vim.cmd('!lua %')
+              vim.cmd '!lua %'
             end
           else
             vim.notify('No run command defined for ' .. ft, vim.log.levels.WARN)
@@ -78,16 +77,16 @@ return {
         function()
           local ft = vim.bo.filetype
           if ft == 'rust' then
-            vim.cmd('!cargo test')
+            vim.cmd '!cargo test'
           elseif ft == 'python' then
-            if vim.fn.glob('pytest.ini') ~= '' or vim.fn.glob('pyproject.toml') ~= '' then
-              vim.cmd('!pytest')
+            if vim.fn.glob 'pytest.ini' ~= '' or vim.fn.glob 'pyproject.toml' ~= '' then
+              vim.cmd '!pytest'
             else
-              vim.cmd('!python -m unittest discover')
+              vim.cmd '!python -m unittest discover'
             end
           elseif ft == 'lua' then
-            if vim.fn.executable('busted') == 1 then
-              vim.cmd('!busted %')
+            if vim.fn.executable 'busted' == 1 then
+              vim.cmd '!busted %'
             else
               vim.notify('No test framework configured for Lua', vim.log.levels.INFO)
             end
@@ -103,9 +102,7 @@ return {
         '<leader>cF',
         function()
           vim.b.disable_autoformat = not vim.b.disable_autoformat
-          local msg = vim.b.disable_autoformat
-              and 'Autoformat: OFF (buffer)'
-              or  'Autoformat: ON (buffer)'
+          local msg = vim.b.disable_autoformat and 'Autoformat: OFF (buffer)' or 'Autoformat: ON (buffer)'
           vim.notify(msg, vim.log.levels.INFO)
         end,
         mode = { 'n' },
@@ -115,7 +112,9 @@ return {
       -- Quick open Conform info panel (moved from <leader>ci to <leader>cI)
       {
         '<leader>cI',
-        function() vim.cmd('ConformInfo') end,
+        function()
+          vim.cmd 'ConformInfo'
+        end,
         mode = { 'n' },
         desc = '[C]ode conform [I]nfo',
       },
@@ -123,10 +122,12 @@ return {
   end)(),
   opts = function()
     -- Helper: cheap executable checks
-    local function has(cmd) return vim.fn.executable(cmd) == 1 end
+    local function has(cmd)
+      return vim.fn.executable(cmd) == 1
+    end
 
     -- Prefer uvx to run Python tools (fast, isolated)
-    local use_uvx = has('uvx')
+    local use_uvx = has 'uvx'
 
     -- Global and buffer toggles honored here
     local function should_format_on_save(bufnr)
@@ -150,8 +151,7 @@ return {
     -- Prefer Ruff everywhere (formatter + fixes + imports).
     -- Fallback to isort+black when Ruff is unavailable.
     local function python_formatters(bufnr)
-      local ok = require('conform')
-        .get_formatter_info('ruff_format', bufnr).available
+      local ok = require('conform').get_formatter_info('ruff_format', bufnr).available
       if ok then
         return { 'ruff_fix', 'ruff_format', 'ruff_organize_imports' }
       else
@@ -160,8 +160,7 @@ return {
     end
 
     -- Pragmatic web stack: prefer Rust-based tools (biome/dprint)
-    local web = { 'biome', 'dprint', 'prettierd', 'prettier',
-                  stop_after_first = true }
+    local web = { 'biome', 'dprint', 'prettierd', 'prettier', stop_after_first = true }
 
     return {
       -- Keep default LSP fallback behavior consistent
@@ -173,7 +172,7 @@ return {
       formatters_by_ft = {
         -- Core stack
         lua = { 'stylua' },
-        rust = { 'rustfmt' },
+        -- rust = { 'rustfmt' }, -- Disabled: rustaceanvim provides better LSP-integrated formatting
         python = python_formatters,
 
         -- Shell & friends
@@ -183,9 +182,9 @@ return {
         fish = { 'fish_indent' },
 
         -- Data/config formats
-        toml = { 'taplo' },       -- Fast TOML formatter
-        yaml = { 'yamlfmt' },     -- Keeps comments w/ yamlfix alt
-        json = web,               -- biome/dprint > prettier
+        toml = { 'taplo' }, -- Fast TOML formatter
+        yaml = { 'yamlfmt' }, -- Keeps comments w/ yamlfix alt
+        json = web, -- biome/dprint > prettier
         jsonc = web,
         -- Disable markdown formatting - can be too aggressive for docs
         -- markdown = { 'cbfmt', unpack(web) },
@@ -225,8 +224,11 @@ return {
             inherit = false,
             command = 'uvx',
             args = {
-              'ruff', 'format',
-              '--stdin-filename', '$FILENAME', '-',
+              'ruff',
+              'format',
+              '--stdin-filename',
+              '$FILENAME',
+              '-',
             },
             stdin = true,
           }
@@ -234,8 +236,12 @@ return {
             inherit = false,
             command = 'uvx',
             args = {
-              'ruff', 'check', '--fix',
-              '--stdin-filename', '$FILENAME', '-',
+              'ruff',
+              'check',
+              '--fix',
+              '--stdin-filename',
+              '$FILENAME',
+              '-',
             },
             stdin = true,
           }
@@ -243,8 +249,14 @@ return {
             inherit = false,
             command = 'uvx',
             args = {
-              'ruff', 'check', '--select', 'I', '--fix',
-              '--stdin-filename', '$FILENAME', '-',
+              'ruff',
+              'check',
+              '--select',
+              'I',
+              '--fix',
+              '--stdin-filename',
+              '$FILENAME',
+              '-',
             },
             stdin = true,
           }
@@ -258,20 +270,14 @@ return {
         -- dprint: only when dprint.json is present
         f.dprint = {
           condition = function(ctx)
-            return vim.fs.find(
-              { 'dprint.json', '.dprint.json' },
-              { path = ctx.filename, upward = true }
-            )[1] ~= nil
+            return vim.fs.find({ 'dprint.json', '.dprint.json' }, { path = ctx.filename, upward = true })[1] ~= nil
           end,
         }
 
         -- sqlfluff: only when config exists; otherwise skip
         f.sqlfluff = {
           condition = function(ctx)
-            return vim.fs.find(
-              { '.sqlfluff', '.sqlfluff.toml', 'pyproject.toml' },
-              { path = ctx.filename, upward = true }
-            )[1] ~= nil
+            return vim.fs.find({ '.sqlfluff', '.sqlfluff.toml', 'pyproject.toml' }, { path = ctx.filename, upward = true })[1] ~= nil
           end,
         }
 
@@ -301,10 +307,9 @@ return {
 
     vim.api.nvim_create_user_command('FormatToggle', function()
       vim.g.disable_autoformat = not vim.g.disable_autoformat
-      local msg = vim.g.disable_autoformat
-          and 'Autoformat: OFF (global)'
-          or  'Autoformat: ON (global)'
+      local msg = vim.g.disable_autoformat and 'Autoformat: OFF (global)' or 'Autoformat: ON (global)'
       vim.notify(msg, vim.log.levels.INFO)
     end, {})
   end,
 }
+

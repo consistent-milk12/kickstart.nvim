@@ -144,6 +144,12 @@ return { -- Enhanced which-key with comprehensive documentation and visual impro
       { '<leader>wo', desc = 'Only This' },
       { '<leader>we', desc = 'Equalize' },
       
+      -- Window resizing
+      { '<C-Up>', desc = 'Increase Window Height' },
+      { '<C-Down>', desc = 'Decrease Window Height' },
+      { '<C-Left>', desc = 'Decrease Window Width' },
+      { '<C-Right>', desc = 'Increase Window Width' },
+      
       -- Undotree
       { '<leader>u', desc = '󰕌 Undo Tree', icon = '󰕌' },
       
@@ -237,6 +243,20 @@ return { -- Enhanced which-key with comprehensive documentation and visual impro
       { '<leader>cF', desc = 'Toggle Format-on-save' },
       { '<leader>cI', desc = 'Conform Info' },
       
+      -- Rust-specific operations (rustaceanvim - only in Rust buffers)
+      { '<leader>ca', desc = 'Rust: Code Actions', mode = { 'n', 'x' } },
+      { '<leader>co', desc = 'Rust: Organize Imports' },
+      { '<leader>cA', desc = 'Rust: Fix All Issues', mode = { 'n', 'x' } },
+      { '<leader>cR', desc = 'Rust: Runnables (advanced)' },
+      { '<leader>cT', desc = 'Rust: Testables (advanced)' },
+      { '<leader>cd', desc = 'Rust: Debuggables' },
+      { '<leader>ce', desc = 'Rust: Explain Error' },
+      { '<leader>cm', desc = 'Rust: Expand Macro' },
+      { '<leader>cp', desc = 'Rust: Parent Module' },
+      { '<leader>cD', desc = 'Rust: Open Docs' },
+      { '<leader>cG', desc = 'Rust: Crate Graph' },
+      { '<leader>ci', desc = 'Rust: Toggle Inlay Hints' },
+      
       -- Enhanced quickfix workflow (Quicker.nvim)
       { '<leader>q', group = ' Quickfix', icon = '' },
       { '<leader>qq', desc = 'Toggle Quickfix' },
@@ -307,13 +327,13 @@ return { -- Enhanced which-key with comprehensive documentation and visual impro
       { 'K', desc = '󰋖 Hover Documentation' },
       { 'gK', desc = '󰋖 Signature Help' },
       
-      -- Terminal mode enhancements
+      -- Terminal mode enhancements (seamless navigation)
       { '<Esc><Esc>', desc = '󰆍 Exit Terminal', mode = 't' },
       { '<C-\\>', desc = '󰆍 Quick Terminal', mode = { 'n', 'i', 't' } },
-      { '<C-h>', desc = '← Window (Terminal)', mode = 't' },
-      { '<C-j>', desc = '↓ Window (Terminal)', mode = 't' },
-      { '<C-k>', desc = '↑ Window (Terminal)', mode = 't' },
-      { '<C-l>', desc = '→ Window (Terminal)', mode = 't' },
+      { '<C-h>', desc = '← Exit Terminal & Move Left', mode = 't' },
+      { '<C-j>', desc = '↓ Exit Terminal & Move Down', mode = 't' },
+      { '<C-k>', desc = '↑ Exit Terminal & Move Up', mode = 't' },
+      { '<C-l>', desc = '→ Exit Terminal & Move Right', mode = 't' },
       
       -- Visual mode enhancements
       { '<', desc = '󰄽 Unindent & Reselect', mode = 'v' },

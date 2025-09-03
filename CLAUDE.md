@@ -44,13 +44,14 @@
 - `trouble.nvim` - Diagnostics and quickfix enhancement
 
 ### 🖥️ **Terminal & System**
-- `toggleterm.nvim` - Floating/split terminals + REPL integration
+- `toggleterm.nvim` - Floating/split terminals + REPL integration + seamless navigation
 - `neoscroll.nvim` - Smooth scrolling animations
 - `snacks.nvim` - Performance optimizations (bigfile/quickfile)
 
 ### 🧪 **Development Tools**
 - `nvim-dap` + `nvim-dap-ui` - Debugging interface
 - `nvim-lint` - Linting integration (disabled for markdown)
+- `rustaceanvim` - Comprehensive Rust IDE with rust-analyzer integration
 
 ## Essential Keymaps
 
@@ -66,6 +67,8 @@
 - `cf` - Format buffer/selection | `cr/ct` - Run/test (language-aware)
 - `cF/cI` - Toggle format-on-save/conform-info
 - `grn/gra/grr` - Rename/action/references | `grd/gri` - Definition/implementation
+- **Rust-specific**: `ca/co/cA` - Actions/organize/fix-all | `cR/cT/cd` - Advanced run/test/debug
+- **Rust tools**: `ce/cm/cp/cD/cG/ci` - Explain/macro/parent/docs/graph/inlays
 
 ### **File Operations** `<leader>f*`
 - `-` - Oil parent directory | `fe/fo` - Explorer root/reveal current
@@ -80,6 +83,7 @@
 - `tf/th/tv/tt` - Float/horizontal/vertical/toggle terminal
 - `tp/tn` - Python/Node REPL | `<C-\>` - Quick terminal toggle
 - `tc/th` - Toggle completion/inlay-hints
+- Terminal navigation: `<C-hjkl>` - Exit terminal & move to adjacent windows
 
 ### **UI & Diagnostics** `<leader>x*` + `<leader>n*`
 - `xx/xX` - Diagnostics/buffer-diagnostics | `xs/xl` - Symbols/references

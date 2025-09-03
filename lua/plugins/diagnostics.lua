@@ -152,10 +152,11 @@ return {
         -- Completely disable treesitter integration
         use_diagnostic_signs = false, -- Don't use diagnostic signs
 
-        -- Simple window configuration
+        -- Window configuration - default to vertical split
         win = {
           border = 'single', -- Use simple border
-          size = { height = 0.25 },
+          position = 'right', -- Open vertically on the right
+          size = { width = 0.4 },
         },
 
         -- Disable preview to avoid treesitter issues

@@ -77,13 +77,26 @@ return {
         vim.opt_local.foldcolumn = '0'
         vim.opt_local.signcolumn = 'no'
 
-        -- Terminal-specific keymaps
+        -- Terminal-specific keymaps for seamless navigation
         local opts = { buffer = term.bufnr }
-        vim.keymap.set('t', '<C-h>', [[<Cmd>wincmd h<CR>]], opts)
-        vim.keymap.set('t', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
-        vim.keymap.set('t', '<C-k>', [[<Cmd>wincmd k<CR>]], opts)
-        vim.keymap.set('t', '<C-l>', [[<Cmd>wincmd l<CR>]], opts)
+        -- Navigate from terminal to other windows (exit terminal mode first)
+        vim.keymap.set('t', '<C-h>', [[<C-\><C-n><C-w>h]], opts)
+        vim.keymap.set('t', '<C-j>', [[<C-\><C-n><C-w>j]], opts)
+        vim.keymap.set('t', '<C-k>', [[<C-\><C-n><C-w>k]], opts)
+        vim.keymap.set('t', '<C-l>', [[<C-\><C-n><C-w>l]], opts)
         vim.keymap.set('t', '<C-w>', [[<C-\><C-n><C-w>]], opts)
+        
+        -- Quick return to terminal insert mode when entering terminal window
+        vim.api.nvim_create_autocmd('BufEnter', {
+          buffer = term.bufnr,
+          callback = function()
+            if vim.bo.buftype == 'terminal' then
+              vim.defer_fn(function()
+                vim.cmd('startinsert')
+              end, 10)
+            end
+          end,
+        })
       end,
 
       -- Terminal exit handling

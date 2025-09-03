@@ -2,6 +2,7 @@
 -- Provides visual buffer management with LSP diagnostics and git status
 return {
   'akinsho/bufferline.nvim',
+  enabled = false, -- Disabled bufferline
   version = '*',
   dependencies = 'nvim-tree/nvim-web-devicons',
   event = 'VeryLazy',
