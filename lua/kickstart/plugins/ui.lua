@@ -5,7 +5,7 @@ return {
   -- Modern statusline (Plugin.md 2025 recommendation)
   {
     'nvim-lualine/lualine.nvim',
-    dependencies = { 'nvim-tree/nvim-web-devicons', 'echasnovski/mini.icons' },
+    dependencies = { 'echasnovski/mini.icons' },
     config = function()
       require('lualine').setup({
         options = {

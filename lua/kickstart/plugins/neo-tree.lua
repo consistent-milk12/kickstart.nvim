@@ -5,8 +5,7 @@ return {
   version = '*',
   dependencies = {
     'nvim-lua/plenary.nvim',
-    'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
-    'echasnovski/mini.icons', -- modern alternative icon provider
+    'echasnovski/mini.icons', -- modern icon provider (2025 standard)
     'MunifTanjim/nui.nvim',
   },
   lazy = false,
