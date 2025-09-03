@@ -49,6 +49,9 @@ return {
       -- Enhanced UI settings for TokyoNight integration
       kind = 'tab', -- Default to tab, but floating available via keybind
 
+      -- TokyoNight-compatible graph settings
+      graph_style = 'unicode', -- Use unicode characters for better visual appeal
+
       -- Status buffer configuration
       status = {
         recent_commit_count = 10,
@@ -126,11 +129,11 @@ return {
         kind = 'split',
       },
 
-      -- Enhanced signs for git status
+      -- Enhanced signs for git status (TokyoNight compatible)
       signs = {
         hunk = { '', '' },
-        item = { '>', ' ' },
-        section = { '>', 'v' },
+        item = { '', '' },
+        section = { '', '' },
       },
 
       -- Integrations
@@ -278,6 +281,50 @@ return {
         },
       },
     }
+
+    -- Apply TokyoNight-compatible highlights after setup
+    vim.api.nvim_create_autocmd('ColorScheme', {
+      pattern = 'tokyonight*',
+      callback = function()
+        local colors = require('tokyonight.colors').setup()
+
+        -- Neogit buffer highlights
+        vim.api.nvim_set_hl(0, 'NeogitBranch', { fg = colors.purple })
+        vim.api.nvim_set_hl(0, 'NeogitRemote', { fg = colors.orange })
+        vim.api.nvim_set_hl(0, 'NeogitHunkHeader', { fg = colors.blue, bold = true })
+        vim.api.nvim_set_hl(0, 'NeogitHunkHeaderHighlight', { fg = colors.bg, bg = colors.blue })
+        vim.api.nvim_set_hl(0, 'NeogitDiffContext', { fg = colors.fg_dark })
+        vim.api.nvim_set_hl(0, 'NeogitDiffAdd', { fg = colors.green })
+        vim.api.nvim_set_hl(0, 'NeogitDiffDelete', { fg = colors.red })
+        vim.api.nvim_set_hl(0, 'NeogitDiffAddHighlight', { fg = colors.bg, bg = colors.green })
+        vim.api.nvim_set_hl(0, 'NeogitDiffDeleteHighlight', { fg = colors.bg, bg = colors.red })
+        vim.api.nvim_set_hl(0, 'NeogitCommitViewHeader', { fg = colors.cyan, bold = true })
+        vim.api.nvim_set_hl(0, 'NeogitFilePath', { fg = colors.blue1 })
+        vim.api.nvim_set_hl(0, 'NeogitObjectId', { fg = colors.comment })
+        vim.api.nvim_set_hl(0, 'NeogitStash', { fg = colors.magenta })
+        vim.api.nvim_set_hl(0, 'NeogitRebaseDone', { fg = colors.comment })
+        vim.api.nvim_set_hl(0, 'NeogitFold', { fg = colors.comment })
+        vim.api.nvim_set_hl(0, 'NeogitChangeModified', { fg = colors.orange })
+        vim.api.nvim_set_hl(0, 'NeogitChangeAdded', { fg = colors.green })
+        vim.api.nvim_set_hl(0, 'NeogitChangeDeleted', { fg = colors.red })
+        vim.api.nvim_set_hl(0, 'NeogitChangeRenamed', { fg = colors.purple })
+        vim.api.nvim_set_hl(0, 'NeogitChangeUpdated', { fg = colors.yellow })
+        vim.api.nvim_set_hl(0, 'NeogitChangeCopied', { fg = colors.cyan })
+        vim.api.nvim_set_hl(0, 'NeogitChangeUnmerged', { fg = colors.red1, bold = true })
+        vim.api.nvim_set_hl(0, 'NeogitSectionHeader', { fg = colors.cyan, bold = true })
+        vim.api.nvim_set_hl(0, 'NeogitUntrackedfiles', { fg = colors.red })
+        vim.api.nvim_set_hl(0, 'NeogitUnstagedchanges', { fg = colors.yellow })
+        vim.api.nvim_set_hl(0, 'NeogitStagedchanges', { fg = colors.green })
+        vim.api.nvim_set_hl(0, 'NeogitUnpulledchanges', { fg = colors.purple })
+        vim.api.nvim_set_hl(0, 'NeogitUnpushedchanges', { fg = colors.orange })
+        vim.api.nvim_set_hl(0, 'NeogitRecentcommits', { fg = colors.blue })
+        vim.api.nvim_set_hl(0, 'NeogitStashes', { fg = colors.magenta })
+      end,
+    })
+
+    -- Apply highlights immediately if TokyoNight is already loaded
+    if vim.g.colors_name and vim.g.colors_name:match 'tokyonight' then
+      vim.cmd('doautocmd ColorScheme ' .. vim.g.colors_name)
+    end
   end,
 }
-

@@ -16,18 +16,16 @@ return {
     config = function(_, opts)
       -- Setup lazydev with opts
       require('lazydev').setup(opts)
-      
+
       -- Temporarily suppress client.notify deprecation warnings for lazydev
       -- until upstream fix is merged
       local original_notify = vim.notify
-      vim.notify = function(msg, level, opts_notify)
+      vim.notify = function(msg, level, notify_opts)
         -- Filter out lazydev client.notify deprecation warnings
-        if type(msg) == 'string' and 
-           msg:match('client%.notify is deprecated') and
-           debug.getinfo(3, 'S').source:match('lazydev') then
+        if type(msg) == 'string' and msg:match 'client%.notify is deprecated' and debug.getinfo(3, 'S').source:match 'lazydev' then
           return -- Suppress this specific deprecation warning
         end
-        return original_notify(msg, level, opts_notify)
+        return original_notify(msg, level, notify_opts)
       end
     end,
   },

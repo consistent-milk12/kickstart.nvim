@@ -1,19 +1,22 @@
+-- Snacks.nvim - Performance optimizations only, UI handled by dedicated plugins
 return {
   'folke/snacks.nvim',
   priority = 1000,
   lazy = false,
   opts = {
-    -- Optimized for 2025 ecosystem - disabled features with dedicated plugins
-    bigfile = { enabled = true }, -- Performance optimization for large files
-    dashboard = { enabled = true }, -- Clean startup dashboard
-    explorer = { enabled = false }, -- Using neo-tree.nvim instead
-    input = { enabled = true }, -- Enhanced input UI
-    picker = { enabled = false }, -- Using telescope.nvim instead
-    notifier = { enabled = true }, -- Notification system
-    quickfile = { enabled = true }, -- Performance for quick file operations
-    scope = { enabled = true }, -- Scope-based features
-    scroll = { enabled = true }, -- Smooth scrolling experience
+    -- Performance optimizations (no conflicts)
+    bigfile = { enabled = true }, -- Large file performance
+    quickfile = { enabled = true }, -- Quick file operations
     statuscolumn = { enabled = true }, -- Enhanced status column
-    words = { enabled = true }, -- Word highlighting features
+    scope = { enabled = true }, -- Scope-based features
+    
+    -- Disabled - using dedicated plugins instead
+    dashboard = { enabled = false }, -- Keep startup clean
+    explorer = { enabled = false }, -- Using Oil.nvim
+    picker = { enabled = false }, -- Using telescope.nvim
+    scroll = { enabled = false }, -- Using neoscroll.nvim instead
+    input = { enabled = false }, -- Conflicts with noice.nvim
+    notifier = { enabled = false }, -- Conflicts with nvim-notify + noice
+    words = { enabled = false }, -- Conflicts with illuminate.nvim
   },
 }

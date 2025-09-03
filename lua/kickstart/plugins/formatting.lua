@@ -187,8 +187,9 @@ return {
         yaml = { 'yamlfmt' },     -- Keeps comments w/ yamlfix alt
         json = web,               -- biome/dprint > prettier
         jsonc = web,
-        markdown = { 'cbfmt', unpack(web) },
-        md = { 'cbfmt', unpack(web) },
+        -- Disable markdown formatting - can be too aggressive for docs
+        -- markdown = { 'cbfmt', unpack(web) },
+        -- md = { 'cbfmt', unpack(web) },
 
         -- Web stack
         javascript = web,

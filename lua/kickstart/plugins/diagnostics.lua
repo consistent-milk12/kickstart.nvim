@@ -6,32 +6,81 @@ return {
     priority = 1000,
     config = function()
       require('tiny-inline-diagnostic').setup {
-        preset = 'modern', -- or 'classic', 'minimal', 'powerline', etc
+        preset = 'modern',
         options = {
-          -- Show source if there are multiple diagnostic sources
           show_source = false,
-          -- Improved throttle for better performance (was too aggressive at 20)
-          throttle = 100,
-          -- Only show errors and warnings by default
+          throttle = 100, -- Balanced performance
           severity = {
             vim.diagnostic.severity.ERROR,
             vim.diagnostic.severity.WARN,
           },
-          -- Enable multiline diagnostic messages (but can be noisy)
           multilines = false,
-          -- Show all diagnostics on the line (can be overwhelming)
-          show_all_diags_on_cursorline = false,
+          show_all_diags_on_cursorline = true, -- Better UX in practice
+          -- Enhanced visual options for TokyoNight
+          softwrap = 30, -- Wrap long messages
+          multiple_diag_under_cursor = true,
+          -- Exclude markdown files from inline diagnostics (too noisy)
+          exclude_filetypes = { 'markdown', 'text' },
+          -- Aesthetic improvements
+          break_line = {
+            enabled = true,
+            after = 50, -- Break lines longer than 50 characters
+          },
+          virt_texts = {
+            priority = 2048, -- High priority to show over other virtual text
+          },
         },
         signs = {
-          left = ' ',
-          right = ' ',
+          left = '',
+          right = '',
           diag = '●',
-          arrow = '    ',
-          up_arrow = '    ',
-          vertical = ' │',
-          vertical_end = ' └',
+          arrow = ' ',
+          up_arrow = ' ',
+          vertical = '│',
+          vertical_end = '└',
         },
       }
+      
+      -- Apply TokyoNight-compatible highlights
+      vim.api.nvim_create_autocmd('ColorScheme', {
+        pattern = 'tokyonight*',
+        callback = function()
+          local colors = require('tokyonight.colors').setup()
+          
+          -- Inline diagnostic highlights
+          vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextError', { 
+            fg = colors.red1, 
+            bg = 'NONE',
+            italic = true 
+          })
+          vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextWarn', { 
+            fg = colors.yellow, 
+            bg = 'NONE',
+            italic = true 
+          })
+          vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextInfo', { 
+            fg = colors.blue, 
+            bg = 'NONE',
+            italic = true 
+          })
+          vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextHint', { 
+            fg = colors.teal, 
+            bg = 'NONE',
+            italic = true 
+          })
+          
+          -- Diagnostic arrows/connectors
+          vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextArrow', { 
+            fg = colors.comment, 
+            bg = 'NONE' 
+          })
+        end,
+      })
+      
+      -- Apply highlights immediately if TokyoNight is loaded
+      if vim.g.colors_name and vim.g.colors_name:match('tokyonight') then
+        vim.cmd('doautocmd ColorScheme ' .. vim.g.colors_name)
+      end
     end,
   },
 

@@ -285,15 +285,18 @@ require('lazy').setup {
   -- Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line', -- Removed: now integrated in ui.lua
   require 'kickstart.plugins.lint',
-  require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree', -- Disabled in favor of oil.nvim
+  require 'kickstart.plugins.autopairs', -- enhanced with blink.cmp integration
   require 'kickstart.plugins.oil',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
   require 'kickstart.plugins.neogit', -- modern git interface
   require 'kickstart.plugins.flash', -- fast navigation with search labels
   require 'kickstart.plugins.noice', -- enhanced UI for messages/cmdline/popupmenu
+  require 'kickstart.plugins.snacks', -- performance optimizations (bigfile, quickfile, statuscolumn)
+  require 'kickstart.plugins.neoscroll', -- smooth scrolling animations
+  require 'kickstart.plugins.undotree', -- visual undo history with TokyoNight theming
+  require 'kickstart.plugins.toggleterm', -- advanced terminal management with floating/split terminals
+  require 'kickstart.plugins.bufferline', -- modern buffer tabs with diagnostics and TokyoNight theming
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
