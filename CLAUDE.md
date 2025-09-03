@@ -1,7 +1,5 @@
 # CLAUDE.md - Comprehensive Config Reference
 
-**Kickstart.nvim** with TokyoNight Night, modern plugin stack, performance optimized for <100ms startup.
-
 ## Core Stack
 - **Theme**: TokyoNight Night + comprehensive plugin highlights + nerd fonts
 - **Completion**: Blink.cmp (Rust fuzzy) + LuaSnip + friendly-snippets
@@ -17,7 +15,7 @@
 - `flash.nvim` - Fast jump navigation with labels
 - `undotree.nvim` - Visual undo history
 
-### 💻 **LSP & Completion** 
+### 💻 **LSP & Completion**
 - `nvim-lspconfig` + `mason.nvim` - LSP server management
 - `blink.cmp` - High-performance completion (0.5-4ms vs nvim-cmp's 60ms)
 - `lazydev.nvim` - Lua development enhancements
@@ -61,7 +59,7 @@
 - `su/s.` - Undo-tree/recent-files | `sn` - Neovim config | `/` - Buffer search
 
 ### **Git Operations** `<leader>g*` + `<leader>h*`
-- `gg/gG` - Neogit status/float | `gc/gb/gs` - Commits/branches/status  
+- `gg/gG` - Neogit status/float | `gc/gb/gs` - Commits/branches/status
 - `hs/hr` - Stage/reset hunk | `hp/hd` - Preview/diff | `]c/[c` - Next/prev hunk
 
 ### **Code Operations** `<leader>c*`
@@ -92,7 +90,7 @@
 - `<C-hjkl>` - Navigate windows | `<C-arrows>` - Resize windows
 
 ## Protected Namespaces
-**Reserved**: `<leader>s*` Search | `<leader>g/h*` Git | `<leader>f*` Files | `<leader>c*` Code  
+**Reserved**: `<leader>s*` Search | `<leader>g/h*` Git | `<leader>f*` Files | `<leader>c*` Code
 **System**: `<leader>b/w*` Buffers/Windows | `<leader>t*` Terminal/Toggle | `<leader>n/q/x*` UI/Quickfix/Diagnostics
 
 ## Performance Optimization
@@ -113,7 +111,7 @@
 
 ### 2. **Integration Steps**
 ```lua
--- 1. Create plugin file: /lua/kickstart/plugins/plugin-name.lua
+-- 1. Create plugin file: /lua/plugins/plugin-name.lua
 -- 2. Follow existing patterns:
 return {
   'author/plugin-name',
@@ -127,7 +125,7 @@ return {
       -- TokyoNight theming integration
       -- Performance optimizations
     })
-    
+
     -- Apply TokyoNight highlights
     vim.api.nvim_create_autocmd('ColorScheme', {
       pattern = 'tokyonight*',
@@ -142,7 +140,7 @@ return {
 ### 3. **Configuration Integration**
 ```lua
 -- 3. Wire into init.lua
-require 'kickstart.plugins.plugin-name', -- description
+require 'plugins.plugin-name', -- description
 
 -- 4. Update which-key.lua with new keymaps
 { '<leader>xx', desc = 'Plugin Action', icon = '' },
@@ -168,6 +166,6 @@ nvim --startuptime startup.log -c q
 
 ## Management Commands
 - `:Lazy` - Plugin manager UI | `:Mason` - LSP tool installer
-- `:checkhealth` - System diagnostics | `:ConformInfo` - Formatter status  
+- `:checkhealth` - System diagnostics | `:ConformInfo` - Formatter status
 - `:Telescope` - All pickers | `:Trouble` - Enhanced diagnostics
 - `:Oil` - File management | `:UndotreeToggle` - Undo visualization

@@ -18,14 +18,14 @@ return {
       end)(),
       opts = {},
     },
-    
+
     -- VSCode-style snippets (now enabled)
     { 'rafamadriz/friendly-snippets' },
-    
+
     -- Lua development integration
     'folke/lazydev.nvim',
   },
-  
+
   --- @module 'blink.cmp'
   --- @type blink.cmp.Config
   opts = {
@@ -47,7 +47,7 @@ return {
       list = {
         selection = {
           preselect = function()
-            return not require('blink.cmp').snippet_active({ direction = 1 })
+            return not require('blink.cmp').snippet_active { direction = 1 }
           end,
           auto_insert = true,
         },
@@ -106,12 +106,24 @@ return {
 
       -- Quick snippet-only completion
       ['<C-s>'] = {
-        function(cmp) cmp.show({ providers = { 'snippets' } }) end,
+        function(cmp)
+          cmp.show { providers = { 'snippets' } }
+        end,
       },
 
       -- Ghost text navigation when menu is closed
-      ['<M-n>'] = { function(cmp) cmp.select_next({ on_ghost_text = true }) end, 'fallback' },
-      ['<M-p>'] = { function(cmp) cmp.select_prev({ on_ghost_text = true }) end, 'fallback' },
+      ['<M-n>'] = {
+        function(cmp)
+          cmp.select_next { on_ghost_text = true }
+        end,
+        'fallback',
+      },
+      ['<M-p>'] = {
+        function(cmp)
+          cmp.select_prev { on_ghost_text = true }
+        end,
+        'fallback',
+      },
     },
 
     -- Cmdline integration (works great with noice.nvim)
@@ -144,3 +156,4 @@ return {
     },
   },
 }
+

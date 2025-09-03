@@ -268,35 +268,35 @@ rtp:prepend(lazypath)
 require('lazy').setup {
 
   -- Core plugin modules
-  require 'kickstart.plugins.utils',
-  require 'kickstart.plugins.which-key',
-  require 'kickstart.plugins.telescope',
-  require 'kickstart.plugins.lsp',
-  require 'kickstart.plugins.formatting',
-  require 'kickstart.plugins.completion',
-  require 'kickstart.plugins.colorscheme',
-  require 'kickstart.plugins.ui',
-  require 'kickstart.plugins.treesitter',
-  require 'kickstart.plugins.icons',
-  require 'kickstart.plugins.diagnostics',
+  require 'plugins.utils',
+  require 'plugins.which-key',
+  require 'plugins.telescope',
+  require 'plugins.lsp',
+  require 'plugins.formatting',
+  require 'plugins.completion',
+  require 'plugins.colorscheme',
+  require 'plugins.ui',
+  require 'plugins.treesitter',
+  require 'plugins.icons',
+  require 'plugins.diagnostics',
 
-  -- Optional kickstart plugins
-  -- These plugins are defined in lua/kickstart/plugins/ and provide additional functionality.
+  -- Optional plugins
+  -- These plugins are defined in lua/plugins/ and provide additional functionality.
   -- Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  require 'kickstart.plugins.debug',
-  require 'kickstart.plugins.lint',
-  require 'kickstart.plugins.autopairs', -- enhanced with blink.cmp integration
-  require 'kickstart.plugins.oil',
-  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
-  require 'kickstart.plugins.neogit', -- modern git interface
-  require 'kickstart.plugins.flash', -- fast navigation with search labels
-  require 'kickstart.plugins.noice', -- enhanced UI for messages/cmdline/popupmenu
-  require 'kickstart.plugins.snacks', -- performance optimizations (bigfile, quickfile, statuscolumn)
-  require 'kickstart.plugins.neoscroll', -- smooth scrolling animations
-  require 'kickstart.plugins.undotree', -- visual undo history with TokyoNight theming
-  require 'kickstart.plugins.toggleterm', -- advanced terminal management with floating/split terminals
-  require 'kickstart.plugins.bufferline', -- modern buffer tabs with diagnostics and TokyoNight theming
+  require 'plugins.debug',
+  require 'plugins.lint',
+  require 'plugins.autopairs', -- enhanced with blink.cmp integration
+  require 'plugins.oil',
+  require 'plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'plugins.neogit', -- modern git interface
+  require 'plugins.flash', -- fast navigation with search labels
+  require 'plugins.noice', -- enhanced UI for messages/cmdline/popupmenu
+  require 'plugins.snacks', -- performance optimizations (bigfile, quickfile, statuscolumn)
+  require 'plugins.neoscroll', -- smooth scrolling animations
+  require 'plugins.undotree', -- visual undo history with TokyoNight theming
+  require 'plugins.toggleterm', -- advanced terminal management with floating/split terminals
+  require 'plugins.bufferline', -- modern buffer tabs with diagnostics and TokyoNight theming
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.

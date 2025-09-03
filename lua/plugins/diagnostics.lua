@@ -40,45 +40,45 @@ return {
           vertical_end = '└',
         },
       }
-      
+
       -- Apply TokyoNight-compatible highlights
       vim.api.nvim_create_autocmd('ColorScheme', {
         pattern = 'tokyonight*',
         callback = function()
           local colors = require('tokyonight.colors').setup()
-          
+
           -- Inline diagnostic highlights
-          vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextError', { 
-            fg = colors.red1, 
+          vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextError', {
+            fg = colors.red1,
             bg = 'NONE',
-            italic = true 
+            italic = true,
           })
-          vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextWarn', { 
-            fg = colors.yellow, 
+          vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextWarn', {
+            fg = colors.yellow,
             bg = 'NONE',
-            italic = true 
+            italic = true,
           })
-          vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextInfo', { 
-            fg = colors.blue, 
+          vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextInfo', {
+            fg = colors.blue,
             bg = 'NONE',
-            italic = true 
+            italic = true,
           })
-          vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextHint', { 
-            fg = colors.teal, 
+          vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextHint', {
+            fg = colors.teal,
             bg = 'NONE',
-            italic = true 
+            italic = true,
           })
-          
+
           -- Diagnostic arrows/connectors
-          vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextArrow', { 
-            fg = colors.comment, 
-            bg = 'NONE' 
+          vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextArrow', {
+            fg = colors.comment,
+            bg = 'NONE',
           })
         end,
       })
-      
+
       -- Apply highlights immediately if TokyoNight is loaded
-      if vim.g.colors_name and vim.g.colors_name:match('tokyonight') then
+      if vim.g.colors_name and vim.g.colors_name:match 'tokyonight' then
         vim.cmd('doautocmd ColorScheme ' .. vim.g.colors_name)
       end
     end,
