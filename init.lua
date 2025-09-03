@@ -199,6 +199,26 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+-- Window splitting
+vim.keymap.set('n', '<leader>sh', '<C-w>s', { desc = '[S]plit [H]orizontal' })
+vim.keymap.set('n', '<leader>sv', '<C-w>v', { desc = '[S]plit [V]ertical' })
+vim.keymap.set('n', '<leader>sc', '<C-w>c', { desc = '[S]plit [C]lose' })
+vim.keymap.set('n', '<leader>so', '<C-w>o', { desc = '[S]plit [O]nly (close others)' })
+vim.keymap.set('n', '<leader>se', '<C-w>=', { desc = '[S]plit [E]qualize' })
+
+-- Window resizing
+vim.keymap.set('n', '<C-Up>', '<C-w>+', { desc = 'Increase window height' })
+vim.keymap.set('n', '<C-Down>', '<C-w>-', { desc = 'Decrease window height' })
+vim.keymap.set('n', '<C-Left>', '<C-w><', { desc = 'Decrease window width' })
+vim.keymap.set('n', '<C-Right>', '<C-w>>', { desc = 'Increase window width' })
+
+-- Buffer management
+vim.keymap.set('n', '<leader>bd', '<cmd>bdelete<cr>', { desc = '[B]uffer [D]elete' })
+vim.keymap.set('n', '<leader>bn', '<cmd>bnext<cr>', { desc = '[B]uffer [N]ext' })
+vim.keymap.set('n', '<leader>bp', '<cmd>bprevious<cr>', { desc = '[B]uffer [P]revious' })
+vim.keymap.set('n', '<leader>bD', '<cmd>%bdelete|edit#|bdelete#<cr>', { desc = '[B]uffer [D]elete all but current' })
+vim.keymap.set('n', '<leader>bl', '<cmd>buffers<cr>', { desc = '[B]uffer [L]ist' })
+
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
@@ -271,6 +291,7 @@ require('lazy').setup {
   -- require 'kickstart.plugins.neo-tree', -- Disabled in favor of oil.nvim
   require 'kickstart.plugins.oil',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.neogit', -- modern git interface
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
