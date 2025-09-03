@@ -1,7 +1,48 @@
+# Temporary files and caches
 tags
 test.sh
 .luarc.json
 nvim
+*.tmp
+*.swp
+*.swo
+*~
 
+# Plugin and package manager files
 spell/
 lazy-lock.json
+.lazy/
+.local/
+.cache/
+
+# LSP and completion caches
+.lsp/
+.null-ls_*
+mason/
+node_modules/
+
+# Debug and profiling
+*.log
+startup.log
+debug.log
+profile.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Backup files
+*.bak
+*.backup
+*~

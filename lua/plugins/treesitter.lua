@@ -1,321 +1,280 @@
--- Advanced Treesitter configuration with textobjects, context, and visual enhancements
+-- Advanced Treesitter configuration (v1.x - new API)
 return {
-  -- Core Treesitter plugin (configs + modules)
+  -- Core Treesitter plugin (new API)
   'nvim-treesitter/nvim-treesitter',
 
-  -- Keep parsers up to date whenever the plugin updates
+  -- Track main branch (required for new API)
+  branch = 'main',
+
+  -- Load eagerly (treesitter doesn't support lazy loading)
+  lazy = false,
+
+  -- Keep parsers updated
   build = ':TSUpdate',
 
-  -- Use the configs module for opts injection
-  main = 'nvim-treesitter.configs',
-
-  -- Related, battle-tested add-ons (loaded alongside)
+  -- Related plugins
   dependencies = {
-    -- Advanced textobjects (select/move/swap)
-    'nvim-treesitter/nvim-treesitter-textobjects',
-    -- Correct commentstring inside embedded languages
+    -- Context-aware commentstring
     'JoosepAlviste/nvim-ts-context-commentstring',
     -- Auto close/rename HTML/JSX/Vue tags
     'windwp/nvim-ts-autotag',
-    -- Sticky code context at the top of the window
+    -- Sticky code context header
     'nvim-treesitter/nvim-treesitter-context',
-    -- Rainbow parentheses/tags via TS queries (commented out - can be aggressive)
-    -- "HiPhish/rainbow-delimiters.nvim",
-    -- Highlight function arguments (defs/usages)
+    -- Function argument highlighting
     'm-demare/hlargs.nvim',
-    -- Smarter % matching with TS awareness
+    -- TS-aware % matching
     'andymass/vim-matchup',
   },
 
-  -- Treesitter setup options (applied to configs.setup)
-  opts = function()
+  -- New API configuration
+  config = function()
     -- Helper: return true for very large buffers (size/lines)
-    local function bigfile(bufnr)
-      -- 1.5 MiB threshold (tune for your machine)
+    local function is_big_file(bufnr)
+      -- 1.5 MiB threshold
       local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(bufnr))
       if ok and stats and stats.size and stats.size > 1.5 * 1024 * 1024 then
         return true
       end
-      -- 25k line threshold (guards pathological files)
+      -- 25k line threshold
       local lines = vim.api.nvim_buf_line_count(bufnr)
       return lines > 25000
     end
 
-    -- Preferred parser set for Rust/Python/Lua + essentials
+    -- Core treesitter setup (new API)
+    require('nvim-treesitter').setup({
+      -- Install directory for parsers
+      install_dir = vim.fn.stdpath('data') .. '/site',
+    })
+
+    -- Install essential parsers
     local parsers = {
-      'bash',
-      'c',
-      'diff',
-      'html',
-      'css',
-      'javascript',
-      'json',
-      'lua',
-      'luadoc',
-      'markdown',
-      'markdown_inline',
-      'python',
-      'query',
-      'regex',
-      'rust',
-      'toml',
-      'vim',
-      'vimdoc',
-      -- Git related (nice quality-of-life in commits/rebases)
-      'git_config',
-      'gitattributes',
-      'gitcommit',
-      'git_rebase',
-      -- Extras frequently encountered in docs/config
-      'yaml',
+      'bash', 'c', 'diff', 'html', 'css', 'javascript', 'json',
+      'lua', 'luadoc', 'markdown', 'markdown_inline', 'python',
+      'query', 'regex', 'rust', 'toml', 'vim', 'vimdoc',
+      'git_config', 'gitattributes', 'gitcommit', 'git_rebase', 'yaml',
     }
+    require('nvim-treesitter').install(parsers)
 
-    -- Return the final opts table to configs.setup
-    return {
-      -- Ensure a useful parser baseline, but allow ad-hoc installs
-      ensure_installed = parsers,
+    -- Enable highlighting via autocmd (new way)
+    vim.api.nvim_create_autocmd('FileType', {
+      pattern = parsers,
+      callback = function(args)
+        if not is_big_file(args.buf) then
+          vim.treesitter.start(args.buf)
+        end
+      end,
+    })
 
-      -- Pull missing parsers automatically on first encounter
-      auto_install = true,
-
-      -- Treesitter-powered highlighting (guarded for big files)
-      highlight = {
-        enable = true,
-        disable = function(_, bufnr)
-          return bigfile(bufnr)
+    -- Enable indentation for selected filetypes (experimental)
+    vim.api.nvim_create_autocmd('FileType', {
+      pattern = { 'lua', 'rust', 'javascript', 'html', 'css' },
+      callback = function(args)
+        if not is_big_file(args.buf) then
+          vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end
+      end,
+    })
+    
+    -- Enable treesitter-based folding with performance guards
+    local function setup_treesitter_folding()
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = parsers, -- Use same parser list as highlighting
+        callback = function(args)
+          local bufnr = args.buf
+          
+          -- Skip folding for big files
+          if is_big_file(bufnr) then
+            return
+          end
+          
+          -- Only enable for files with reasonable complexity
+          local line_count = vim.api.nvim_buf_line_count(bufnr)
+          if line_count < 50 or line_count > 5000 then
+            return
+          end
+          
+          -- Set up treesitter folding
+          vim.wo.foldmethod = 'expr'
+          vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+          vim.wo.foldlevel = 99 -- Start with all folds open
+          vim.wo.foldlevelstart = 99 -- Start with all folds open for new files
+          
+          -- Configure fold display
+          vim.wo.foldcolumn = '1' -- Show fold column
+          vim.wo.fillchars = vim.wo.fillchars .. ',fold: ,foldopen:,foldsep:│,foldclose:'
+          
+          -- Smart fold opening for better UX
+          vim.api.nvim_create_autocmd({ 'BufReadPost', 'FileReadPost' }, {
+            buffer = bufnr,
+            callback = function()
+              -- Open all folds on file read
+              vim.defer_fn(function()
+                pcall(vim.cmd.normal, 'zR')
+              end, 100)
+            end,
+          })
+          
+          -- Keymaps for folding (only set for buffers with folding enabled)
+          local opts = { buffer = bufnr, silent = true }
+          vim.keymap.set('n', 'zC', 'zM', vim.tbl_extend('force', opts, { desc = 'Close all folds' }))
+          vim.keymap.set('n', 'zO', 'zR', vim.tbl_extend('force', opts, { desc = 'Open all folds' }))
+          vim.keymap.set('n', 'z1', function() vim.wo.foldlevel = 1 end, vim.tbl_extend('force', opts, { desc = 'Fold level 1' }))
+          vim.keymap.set('n', 'z2', function() vim.wo.foldlevel = 2 end, vim.tbl_extend('force', opts, { desc = 'Fold level 2' }))
+          vim.keymap.set('n', 'z3', function() vim.wo.foldlevel = 3 end, vim.tbl_extend('force', opts, { desc = 'Fold level 3' }))
+          vim.keymap.set('n', 'z4', function() vim.wo.foldlevel = 4 end, vim.tbl_extend('force', opts, { desc = 'Fold level 4' }))
+          vim.keymap.set('n', 'z5', function() vim.wo.foldlevel = 5 end, vim.tbl_extend('force', opts, { desc = 'Fold level 5' }))
         end,
-      },
+      })
+    end
+    
+    setup_treesitter_folding()
 
-      -- Treesitter indentation (Python is still iffy; disable there)
-      indent = {
-        enable = true,
-        disable = { 'python' },
-      },
-
-      -- Incremental selection (non-conflicting with flash.nvim)
-      incremental_selection = {
-        enable = true,
-        keymaps = {
-          -- Start or expand the selection
-          init_selection = '<C-Space>',
-          -- Grow to the next node
-          node_incremental = '<C-Space>',
-          -- Grow by scope (e.g., function/block)
-          scope_incremental = '<C-s>',
-          -- Shrink to the previous node
-          node_decremental = '<BS>',
-        },
-        -- Enhanced selection behavior
-        is_supported = function()
-          -- Only enable in supported filetypes for better performance
-          local supported_fts = { 'lua', 'rust', 'python', 'javascript', 'typescript', 'json', 'yaml', 'toml' }
-          return vim.tbl_contains(supported_fts, vim.bo.filetype)
-        end,
-      },
-
-      -- Vim-matchup: TS-aware % motions and matches
-      matchup = {
-        enable = true,
-      },
-
-      -- Textobjects: select/move/swap using TS queries
-      textobjects = {
-        -- Selection textobjects (with lookahead)
-        select = {
-          enable = true,
-          lookahead = true,
-          keymaps = {
-            -- Functions (outer/inner)
-            ['af'] = '@function.outer',
-            ['if'] = '@function.inner',
-            -- Classes (outer/inner) - using ]k/[k to avoid git hunk conflicts
-            ['ac'] = '@class.outer',
-            ['ic'] = '@class.inner',
-            -- Parameters/arguments (outer/inner)
-            ['aa'] = '@parameter.outer',
-            ['ia'] = '@parameter.inner',
-            -- Blocks/loops/conditionals (common nodes)
-            ['al'] = '@loop.outer',
-            ['il'] = '@loop.inner',
-            ['ai'] = '@conditional.outer',
-            ['ii'] = '@conditional.inner',
-          },
-        },
-        -- Motions to next/prev function/class/parameter
-        move = {
-          enable = true,
-          set_jumps = true,
-          goto_next_start = {
-            [']m'] = '@function.outer',
-            [']k'] = '@class.outer', -- Changed from ]c to avoid git hunk conflict
-            [']a'] = '@parameter.outer',
-          },
-          goto_previous_start = {
-            ['[m'] = '@function.outer',
-            ['[k'] = '@class.outer', -- Changed from [c to avoid git hunk conflict
-            ['[a'] = '@parameter.outer',
-          },
-          goto_next_end = {
-            [']M'] = '@function.outer',
-            [']K'] = '@class.outer', -- Changed from ]C to avoid git hunk conflict
-          },
-          goto_previous_end = {
-            ['[M'] = '@function.outer',
-            ['[K'] = '@class.outer', -- Changed from [C to avoid git hunk conflict
-          },
-        },
-        -- Swap parameters forward/backward (kept away from flash keys)
-        swap = {
-          enable = true,
-          swap_next = {
-            ['g>'] = '@parameter.inner',
-          },
-          swap_previous = {
-            ['g<'] = '@parameter.inner',
-          },
-        },
-      },
-
-      -- Autotag: auto close/rename tags in web stacks
-      autotag = {
-        enable = true,
-      },
-
-      -- Context-aware commentstring is now handled separately (see config section)
-    }
-  end,
-
-  -- Extra runtime configuration beyond configs.setup
-  config = function(_, opts)
-    -- Skip deprecated treesitter context_commentstring module integration
+    -- Configure plugins that depend on treesitter
+    -- Skip deprecated context_commentstring integration
     vim.g.skip_ts_context_commentstring_module = true
 
-    -- Apply core Treesitter modules
-    require('nvim-treesitter.configs').setup(opts)
-
-    -- Setup context_commentstring separately (new way)
-    require('ts_context_commentstring').setup {
+    -- Setup context_commentstring separately
+    require('ts_context_commentstring').setup({
       enable_autocmd = false,
-    }
+    })
 
-    -- Treesitter folding (commented out - can be aggressive)
-    -- vim.wo.foldmethod = "expr"
-    -- vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-    --
-    -- -- Keep folds open on buffer read (nice default with context plugin)
-    -- vim.api.nvim_create_autocmd({ "BufReadPost", "FileReadPost" }, {
-    --   callback = function() pcall(vim.cmd.normal, "zR") end,
-    -- })
-
-    -- Configure the sticky context header (treesitter-context)
-    require('treesitter-context').setup {
+    -- Configure the sticky context header
+    require('treesitter-context').setup({
       enable = true,
-      max_lines = 3, -- Reduced for cleaner look
+      max_lines = 3,
       min_window_height = 12,
       line_numbers = true,
-      multiline_threshold = 15, -- More aggressive threshold
-      trim_scope = 'outer', -- Trim outer scope for better readability
+      multiline_threshold = 15,
+      trim_scope = 'outer',
       mode = 'cursor',
-      -- Enhanced separator for TokyoNight
-      separator = '▔', -- Subtle top border
-      zindex = 20, -- Ensure it shows above other UI elements
-    }
+      separator = '▔',
+      zindex = 20,
+    })
 
-    -- Rainbow delimiters (commented out - can be visually aggressive)
-    -- local rd = require("rainbow-delimiters")
-    -- vim.g.rainbow_delimiters = {
-    --   strategy = {
-    --     [""] = rd.strategy["global"],
-    --     commonlisp = rd.strategy["local"],
-    --   },
-    --   query = {
-    --     [""] = "rainbow-delimiters",
-    --     latex = "rainbow-blocks",
-    --   },
-    --   priority = {
-    --     [""] = 110,
-    --     lua = 210,
-    --   },
-    -- }
+    -- Setup autotag
+    require('nvim-ts-autotag').setup({
+      opts = {
+        enable_close_on_slash = false,
+      },
+    })
 
-    -- Highlight arguments (good for Rust/Python/Lua)
-    require('hlargs').setup {
-      color = nil, -- Use colorscheme defaults
+    -- Setup hlargs
+    require('hlargs').setup({
+      color = nil,
       use_colorpalette = true,
-      highlight = {}, -- Use defaults but can be customized per language
+      excluded_argnames = {
+        usages = {
+          python = { 'self', 'cls' },
+          lua = { 'self' },
+        },
+      },
       disable = function(_, bufnr)
-        -- Share the bigfile guard for best performance
-        local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(bufnr))
-        return ok and stats and stats.size and stats.size > 1.5 * 1024 * 1024
+        return is_big_file(bufnr)
       end,
-    }
+    })
 
-    -- Apply TokyoNight-compatible highlights for Treesitter components
+    -- Incremental selection using built-in treesitter functions
+    local function setup_incremental_selection()
+      -- Start incremental selection
+      vim.keymap.set('n', '<C-Space>', function()
+        -- Enter visual mode and select current node
+        local node = vim.treesitter.get_node()
+        if node then
+          local start_row, start_col, end_row, end_col = node:range()
+          vim.api.nvim_buf_set_mark(0, '<', start_row + 1, start_col, {})
+          vim.api.nvim_buf_set_mark(0, '>', end_row + 1, end_col - 1, {})
+          vim.cmd('normal! gv')
+        end
+      end, { desc = 'Start incremental selection' })
+      
+      -- Expand selection to parent node
+      vim.keymap.set('v', '<C-Space>', function()
+        local start_row, start_col = unpack(vim.api.nvim_buf_get_mark(0, '<'))
+        local end_row, end_col = unpack(vim.api.nvim_buf_get_mark(0, '>'))
+        
+        -- Get node at current selection start
+        local node = vim.treesitter.get_node({ pos = { start_row - 1, start_col } })
+        if node and node:parent() then
+          local parent = node:parent()
+          local p_start_row, p_start_col, p_end_row, p_end_col = parent:range()
+          vim.api.nvim_buf_set_mark(0, '<', p_start_row + 1, p_start_col, {})
+          vim.api.nvim_buf_set_mark(0, '>', p_end_row + 1, p_end_col - 1, {})
+          vim.cmd('normal! gv')
+        end
+      end, { desc = 'Expand selection' })
+      
+      -- Shrink selection to child node
+      vim.keymap.set('v', '<BS>', function()
+        local start_row, start_col = unpack(vim.api.nvim_buf_get_mark(0, '<'))
+        local node = vim.treesitter.get_node({ pos = { start_row - 1, start_col } })
+        
+        if node then
+          -- Find first child node that contains meaningful content
+          local child = node:child(0)
+          while child do
+            local child_start_row, child_start_col, child_end_row, child_end_col = child:range()
+            -- Skip trivial single-character nodes
+            if (child_end_row - child_start_row > 0) or (child_end_col - child_start_col > 1) then
+              vim.api.nvim_buf_set_mark(0, '<', child_start_row + 1, child_start_col, {})
+              vim.api.nvim_buf_set_mark(0, '>', child_end_row + 1, child_end_col - 1, {})
+              vim.cmd('normal! gv')
+              return
+            end
+            child = child:next_sibling()
+          end
+        end
+      end, { desc = 'Shrink selection' })
+      
+      -- Scope-based incremental selection (for blocks, functions, etc.)
+      vim.keymap.set('v', '<C-g>', function()
+        local start_row, start_col = unpack(vim.api.nvim_buf_get_mark(0, '<'))
+        local node = vim.treesitter.get_node({ pos = { start_row - 1, start_col } })
+        
+        -- Find scope-like parent (function, class, block, etc.)
+        while node do
+          local node_type = node:type()
+          if node_type:match('function') or node_type:match('class') or 
+             node_type:match('block') or node_type:match('body') or
+             node_type:match('statement') then
+            local scope_start_row, scope_start_col, scope_end_row, scope_end_col = node:range()
+            vim.api.nvim_buf_set_mark(0, '<', scope_start_row + 1, scope_start_col, {})
+            vim.api.nvim_buf_set_mark(0, '>', scope_end_row + 1, scope_end_col - 1, {})
+            vim.cmd('normal! gv')
+            return
+          end
+          node = node:parent()
+        end
+      end, { desc = 'Select by scope' })
+    end
+    
+    setup_incremental_selection()
+    
+    -- Textobjects are now handled by treesitter-textobjects.lua plugin
+
+    -- Apply TokyoNight highlights
     vim.api.nvim_create_autocmd('ColorScheme', {
       pattern = 'tokyonight*',
       callback = function()
         local colors = require('tokyonight.colors').setup()
-
-        -- Treesitter context highlights
-        vim.api.nvim_set_hl(0, 'TreesitterContext', {
-          bg = colors.bg_dark,
-          fg = colors.fg,
-        })
-        vim.api.nvim_set_hl(0, 'TreesitterContextBottom', {
-          underline = true,
-          sp = colors.border,
-        })
-        vim.api.nvim_set_hl(0, 'TreesitterContextLineNumber', {
-          fg = colors.dark3,
-          bg = colors.bg_dark,
-        })
-        vim.api.nvim_set_hl(0, 'TreesitterContextSeparator', {
-          fg = colors.border,
-        })
-
-        -- Enhanced argument highlights (hlargs)
-        vim.api.nvim_set_hl(0, 'Hlargs', {
-          fg = colors.yellow,
-          italic = true,
-          bold = false,
-        })
-
-        -- Matchup highlights for better % matching
-        vim.api.nvim_set_hl(0, 'MatchParen', {
-          bg = colors.bg_highlight,
-          bold = true,
-        })
-        vim.api.nvim_set_hl(0, 'MatchParenCur', {
-          bg = colors.bg_highlight,
-          bold = true,
-        })
-        vim.api.nvim_set_hl(0, 'MatchWord', {
-          bg = colors.bg_visual,
-          underline = true,
-        })
-        vim.api.nvim_set_hl(0, 'MatchWordCur', {
-          bg = colors.bg_visual,
-          underline = true,
-        })
-
-        -- Incremental selection highlights
-        vim.api.nvim_set_hl(0, 'TSTextReference', {
-          bg = colors.bg_visual,
-        })
-
-        -- Enhanced textobject highlights
-        vim.api.nvim_set_hl(0, 'TSDefinition', {
-          bg = colors.bg_visual,
-          underline = true,
-        })
-        vim.api.nvim_set_hl(0, 'TSDefinitionUsage', {
-          bg = colors.bg_visual,
-        })
+        
+        -- Context highlights
+        vim.api.nvim_set_hl(0, 'TreesitterContext', { bg = colors.bg_dark, fg = colors.fg })
+        vim.api.nvim_set_hl(0, 'TreesitterContextBottom', { underline = true, sp = colors.border })
+        vim.api.nvim_set_hl(0, 'TreesitterContextLineNumber', { fg = colors.dark3, bg = colors.bg_dark })
+        vim.api.nvim_set_hl(0, 'TreesitterContextSeparator', { fg = colors.border })
+        
+        -- Hlargs highlights
+        vim.api.nvim_set_hl(0, 'Hlargs', { fg = colors.yellow, italic = true })
+        
+        -- Matchup highlights
+        vim.api.nvim_set_hl(0, 'MatchParen', { bg = colors.bg_highlight, bold = true })
+        vim.api.nvim_set_hl(0, 'MatchParenCur', { bg = colors.bg_highlight, bold = true })
+        vim.api.nvim_set_hl(0, 'MatchWord', { bg = colors.bg_visual, underline = true })
+        vim.api.nvim_set_hl(0, 'MatchWordCur', { bg = colors.bg_visual, underline = true })
       end,
     })
-
-    -- Apply highlights immediately if TokyoNight is loaded
-    if vim.g.colors_name and vim.g.colors_name:match 'tokyonight' then
+    
+    if vim.g.colors_name and vim.g.colors_name:match('tokyonight') then
       vim.cmd('doautocmd ColorScheme ' .. vim.g.colors_name)
     end
   end,

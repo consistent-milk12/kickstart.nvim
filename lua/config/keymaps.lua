@@ -51,6 +51,43 @@ vim.keymap.set('n', '<leader>bp', '<cmd>bprevious<cr>', { desc = '[B]uffer [P]re
 vim.keymap.set('n', '<leader>bD', '<cmd>%bdelete|edit#|bdelete#<cr>', { desc = '[B]uffer [D]elete all but current' })
 vim.keymap.set('n', '<leader>bl', '<cmd>buffers<cr>', { desc = '[B]uffer [L]ist' })
 
+-- Quick config reload for development
+vim.keymap.set('n', '<leader>rr', function()
+  -- Clear package cache for config and plugin modules
+  for name, _ in pairs(package.loaded) do
+    if name:match('^config') or name:match('^plugins') then
+      package.loaded[name] = nil
+    end
+  end
+  dofile(vim.env.MYVIMRC)
+  vim.notify('Config reloaded!', vim.log.levels.INFO)
+end, { desc = 'Reload Config' })
+
+-- Format and save file (Ctrl+S)
+vim.keymap.set('n', '<C-s>', function()
+  -- Try to format first, then save
+  local ok = pcall(vim.cmd, 'lua require("conform").format({ timeout_ms = 3000 })')
+  if not ok then
+    vim.notify('Formatting failed, saving anyway', vim.log.levels.WARN)
+  end
+  vim.cmd('write')
+end, { desc = 'Format and save file' })
+
+vim.keymap.set({ 'i', 'v', 's' }, '<C-s>', function()
+  -- Exit to normal mode first
+  vim.cmd('stopinsert')
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
+  
+  -- Schedule format and save for next tick
+  vim.schedule(function()
+    local ok = pcall(vim.cmd, 'lua require("conform").format({ timeout_ms = 3000 })')
+    if not ok then
+      vim.notify('Formatting failed, saving anyway', vim.log.levels.WARN)
+    end
+    vim.cmd('write')
+  end)
+end, { desc = 'Exit to normal, format and save' })
+
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })

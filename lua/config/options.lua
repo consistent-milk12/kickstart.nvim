@@ -1,81 +1,108 @@
--- Set <space> as the leader key
+-- Leader keys (must be first)
 -- See `:help mapleader`
---  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
+-- NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- Set to true if you have a Nerd Font installed and selected in the terminal
+-- Nerd Font available in terminal
 vim.g.have_nerd_font = true
 
--- [[ Setting options ]]
--- See `:help vim.o`
+-- [[ Core Options ]]
+-- See `:help vim.opt` for modern Lua interface
 -- NOTE: You can change these options as you wish!
---  For more options, you can see `:help option-list`
 
--- Make line numbers default
-vim.o.number = true
--- You can also add relative line numbers, to help with jumping.
---  Experiment for yourself to see if you like it!
--- vim.o.relativenumber = true
+-- UI & Colors
+vim.opt.termguicolors = true  -- Enable 24-bit colors for proper theme rendering
+vim.opt.number = true         -- Line numbers
+-- vim.opt.relativenumber = true  -- Relative line numbers for easier jumping
 
--- Enable mouse mode, can be useful for resizing splits for example!
-vim.o.mouse = 'a'
+-- Mouse support for resizing splits, etc.
+vim.opt.mouse = 'a'
 
--- Don't show the mode, since it's already in the status line
-vim.o.showmode = false
+-- Hide mode since it's in statusline
+vim.opt.showmode = false
 
--- Sync clipboard between OS and Neovim.
---  Schedule the setting after `UiEnter` because it can increase startup-time.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
+-- Clipboard: sync with OS, scheduled for performance, skip over SSH
+-- See `:help 'clipboard'`
 vim.schedule(function()
-  vim.o.clipboard = 'unnamedplus'
+  if vim.env.SSH_TTY then
+    vim.opt.clipboard = '' -- Avoid remote clipboard slowness/hangs
+  else
+    vim.opt.clipboard = 'unnamedplus'
+  end
 end)
 
--- Enable break indent
-vim.o.breakindent = true
+-- Editing & Text Formatting
+vim.opt.breakindent = true    -- Wrap preserves indentation
+vim.opt.undofile = true       -- Persistent undo history
 
--- Save undo history
-vim.o.undofile = true
+-- Search behavior
+vim.opt.ignorecase = true     -- Case-insensitive by default
+vim.opt.smartcase = true      -- Case-sensitive if uppercase present
 
--- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
-vim.o.ignorecase = true
-vim.o.smartcase = true
+-- UI Elements  
+vim.opt.signcolumn = 'yes'    -- Always show sign column
+vim.opt.cursorline = true     -- Highlight cursor line
+vim.opt.cursorlineopt = 'number'  -- Only highlight line number (less noisy)
 
--- Keep signcolumn on by default
-vim.o.signcolumn = 'yes'
+-- Scrolling & Navigation
+vim.opt.scrolloff = 10        -- Keep lines above/below cursor
+vim.opt.sidescrolloff = 8     -- Keep columns left/right of cursor
+vim.opt.smoothscroll = true   -- Screen-line scrolling for wrapped text (0.10+)
 
--- Decrease update time
-vim.o.updatetime = 250
+-- Performance & Timing
+vim.opt.updatetime = 250      -- Faster updates for better UX
+vim.opt.timeoutlen = 300      -- Mapping timeout
+vim.opt.ttimeout = true       -- Enable keycode timeout
+vim.opt.ttimeoutlen = 50      -- Snappy escape key response
 
--- Decrease mapped sequence wait time
-vim.o.timeoutlen = 300
+-- Splits & Windows
+vim.opt.splitright = true    -- Vertical splits go right
+vim.opt.splitbelow = true    -- Horizontal splits go below  
+vim.opt.splitkeep = 'screen' -- Reduce content shift on split (0.9+)
 
--- Configure how new splits should be opened
-vim.o.splitright = true
-vim.o.splitbelow = true
+-- Command Line & Messages (optimized for Noice.nvim)
+vim.opt.cmdheight = 0            -- Hide command line, let Noice handle it
+vim.opt.showcmdloc = 'statusline' -- Show partial commands in statusline
+vim.opt.shortmess:append({
+  I = true,  -- No intro message
+  W = true,  -- Don't show "written" messages
+  C = true,  -- Don't show ins-completion messages  
+  s = true,  -- Don't show search hit messages
+})
 
--- Sets how neovim will display certain whitespace characters in the editor.
---  See `:help 'list'`
---  and `:help 'listchars'`
---
---  Notice listchars is set using `vim.opt` instead of `vim.o`.
---  It is very similar to `vim.o` but offers an interface for conveniently interacting with tables.
---   See `:help lua-options`
---   and `:help lua-options-guide`
-vim.o.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+-- Whitespace Visualization
+-- See `:help 'listchars'` - using vim.opt for table interface
+vim.opt.list = true
+vim.opt.listchars = {
+  tab = '» ',
+  trail = '·', 
+  nbsp = '␣',
+  extends = '›',
+  precedes = '‹',
+}
 
--- Preview substitutions live, as you type!
-vim.o.inccommand = 'split'
+-- Live substitute preview
+vim.opt.inccommand = 'split'
 
--- Show which line your cursor is on
-vim.o.cursorline = true
+-- Popup & Float Polish
+vim.opt.pumblend = 10        -- Subtle transparency for completion menu
+vim.opt.winblend = 0         -- Keep normal floats opaque for readability
 
--- Minimal number of screen lines to keep above and below the cursor.
-vim.o.scrolloff = 10
+-- Fill Characters (cleaner appearance)
+vim.opt.fillchars:append({
+  eob = ' ',     -- No ~ at end of buffer
+  diff = '╱',    -- Cleaner diff filler
+})
 
--- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
--- instead raise a dialog asking if you wish to save the current file(s)
--- See `:help 'confirm'`
-vim.o.confirm = true
+-- Command Line Completion
+vim.opt.wildmode = 'longest:full,full'  -- Better completion behavior
+vim.opt.wildoptions = 'pum,fuzzy'       -- Popup menu with fuzzy matching (0.9+)
+
+-- Window Title (useful in tmux/terminal multiplexers)
+vim.opt.title = true
+vim.opt.titlestring = 'nvim — %f'
+
+-- Confirm dialog for unsaved changes
+vim.opt.confirm = true
+

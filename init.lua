@@ -41,6 +41,8 @@ require('lazy').setup {
   require 'plugins.colorscheme',
   require 'plugins.ui',
   require 'plugins.treesitter',
+  require 'plugins.treesitter-textobjects',
+  require 'plugins.aerial',
   require 'plugins.icons',
   require 'plugins.diagnostics',
 

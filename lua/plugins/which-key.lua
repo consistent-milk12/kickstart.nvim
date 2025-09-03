@@ -153,6 +153,9 @@ return { -- Enhanced which-key with comprehensive documentation and visual impro
       -- Undotree
       { '<leader>u', desc = '󰕌 Undo Tree', icon = '󰕌' },
       
+      -- Development utilities
+      { '<leader>rr', desc = '🔄 Reload Config' },
+      
       -- Navigation clusters
       { ']', group = ' Next' },
       { ']c', desc = 'Git Hunk' },
@@ -204,7 +207,7 @@ return { -- Enhanced which-key with comprehensive documentation and visual impro
       
       -- Treesitter incremental selection
       { '<C-Space>', desc = 'TS: Init/Expand Selection', mode = { 'n', 'v' } },
-      { '<C-s>', desc = 'TS: Expand Scope', mode = { 'v' } },
+      { '<C-g>', desc = 'TS: Expand Scope', mode = { 'v' } },
       { '<BS>', desc = 'TS: Shrink Selection', mode = { 'v' } },
       
       -- Treesitter text objects (visual/operator-pending)
@@ -244,18 +247,18 @@ return { -- Enhanced which-key with comprehensive documentation and visual impro
       { '<leader>cI', desc = 'Conform Info' },
       
       -- Rust-specific operations (rustaceanvim - only in Rust buffers)
-      { '<leader>ca', desc = 'Rust: Code Actions', mode = { 'n', 'x' } },
-      { '<leader>co', desc = 'Rust: Organize Imports' },
-      { '<leader>cA', desc = 'Rust: Fix All Issues', mode = { 'n', 'x' } },
-      { '<leader>cR', desc = 'Rust: Runnables (advanced)' },
-      { '<leader>cT', desc = 'Rust: Testables (advanced)' },
-      { '<leader>cd', desc = 'Rust: Debuggables' },
-      { '<leader>ce', desc = 'Rust: Explain Error' },
-      { '<leader>cm', desc = 'Rust: Expand Macro' },
-      { '<leader>cp', desc = 'Rust: Parent Module' },
-      { '<leader>cD', desc = 'Rust: Open Docs' },
-      { '<leader>cG', desc = 'Rust: Crate Graph' },
-      { '<leader>ci', desc = 'Rust: Toggle Inlay Hints' },
+      { '<leader>ca', desc = 'Rust: Code Actions', mode = { 'n', 'x' }, cond = function() return vim.bo.filetype == 'rust' end },
+      { '<leader>co', desc = 'Rust: Organize Imports', cond = function() return vim.bo.filetype == 'rust' end },
+      { '<leader>cA', desc = 'Rust: Fix All Issues', mode = { 'n', 'x' }, cond = function() return vim.bo.filetype == 'rust' end },
+      { '<leader>cR', desc = 'Rust: Runnables (advanced)', cond = function() return vim.bo.filetype == 'rust' end },
+      { '<leader>cT', desc = 'Rust: Testables (advanced)', cond = function() return vim.bo.filetype == 'rust' end },
+      { '<leader>cd', desc = 'Rust: Debuggables', cond = function() return vim.bo.filetype == 'rust' end },
+      { '<leader>ce', desc = 'Rust: Explain Error', cond = function() return vim.bo.filetype == 'rust' end },
+      { '<leader>cm', desc = 'Rust: Expand Macro', cond = function() return vim.bo.filetype == 'rust' end },
+      { '<leader>cp', desc = 'Rust: Parent Module', cond = function() return vim.bo.filetype == 'rust' end },
+      { '<leader>cD', desc = 'Rust: Open Docs', cond = function() return vim.bo.filetype == 'rust' end },
+      { '<leader>cG', desc = 'Rust: Crate Graph', cond = function() return vim.bo.filetype == 'rust' end },
+      { '<leader>ci', desc = 'Rust: Toggle Inlay Hints', cond = function() return vim.bo.filetype == 'rust' end },
       
       -- Enhanced quickfix workflow (Quicker.nvim)
       { '<leader>q', group = ' Quickfix', icon = '' },
@@ -278,9 +281,12 @@ return { -- Enhanced which-key with comprehensive documentation and visual impro
       { '<leader>gP', desc = '󰊢 Git Pull' },
       
       -- Enhanced completion keybindings
-      { '<C-s>', desc = '󰆥 Snippets Only', mode = 'i' },
+      { '<C-j>', desc = '󰆥 Snippets Only', mode = 'i' },
       { '<M-n>', desc = '󰆤 Ghost Text Next', mode = 'i' },
       { '<M-p>', desc = '󰆣 Ghost Text Prev', mode = 'i' },
+      
+      -- File operations
+      { '<C-s>', desc = '💾 Format & Save', mode = { 'n', 'i', 'v', 's' } },
       
       -- Blink.cmp documentation and menu
       { '<C-space>', desc = '󰋖 Show Completion/Docs', mode = 'i' },
@@ -321,6 +327,11 @@ return { -- Enhanced which-key with comprehensive documentation and visual impro
       { '<leader>fE', desc = '󰝰 Oil Explorer (Here)' },
       { '<leader>fo', desc = '󰝰 Reveal in Oil' },
       { '<leader>fO', desc = '󰝰 Open CWD in Oil' },
+      
+      -- Treesitter LSP interop: peek definition code
+      { '<leader>d', group = ' Definition Peek', icon = '' },
+      { '<leader>df', desc = 'Peek Function Definition' },
+      { '<leader>dF', desc = 'Peek Class Definition' },
       
       -- Additional useful mappings that might be missing
       { 'gx', desc = '󰖟 Open URL/Path' },

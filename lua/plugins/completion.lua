@@ -105,7 +105,7 @@ return {
       preset = 'default',
 
       -- Quick snippet-only completion
-      ['<C-s>'] = {
+      ['<C-j>'] = {
         function(cmp)
           cmp.show { providers = { 'snippets' } }
         end,

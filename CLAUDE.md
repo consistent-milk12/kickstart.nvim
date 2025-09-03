@@ -1,5 +1,15 @@
 # CLAUDE.md - Comprehensive Config Reference
 
+## IMPORTANT PROJECT RULES
+
+### No Icons or Emojis Policy
+**MANDATORY**: This project maintains a clean, professional codebase:
+- NO emojis in code, comments, commit messages, or documentation
+- NO icon characters or Unicode symbols for decorative purposes
+- Nerd Font icons in UI plugins (like which-key, lualine) are acceptable for functional display
+- Focus on clear, readable text-based communication
+- This rule applies to ALL contributors and AI assistants
+
 ## Core Stack
 - **Theme**: TokyoNight Night + comprehensive plugin highlights + nerd fonts
 - **Completion**: Blink.cmp (Rust fuzzy) + LuaSnip + friendly-snippets
@@ -9,19 +19,19 @@
 
 ## Plugin Architecture (45+ plugins)
 
-### 🔍 **Search & Navigation**
+### Search & Navigation
 - `telescope.nvim` - Fuzzy finder (files/grep/symbols/git/undo)
 - `oil.nvim` - File management as buffers
 - `flash.nvim` - Fast jump navigation with labels
 - `undotree.nvim` - Visual undo history
 
-### 💻 **LSP & Completion**
+### LSP & Completion
 - `nvim-lspconfig` + `mason.nvim` - LSP server management
 - `blink.cmp` - High-performance completion (0.5-4ms vs nvim-cmp's 60ms)
 - `lazydev.nvim` - Lua development enhancements
 - `conform.nvim` - Code formatting with Ruff/stylua integration
 
-### 🎨 **UI & Visual**
+### UI & Visual
 - `tokyonight.nvim` - Modern colorscheme with extensive highlights
 - `lualine.nvim` - Statusline with git/lsp integration
 - `bufferline.nvim` - Buffer tabs with diagnostics
@@ -31,24 +41,27 @@
 - `nvim-colorizer.lua` - Inline color preview
 - `vim-illuminate` - Highlight word under cursor
 
-### 🔧 **Git Workflow**
+### Git Workflow
 - `gitsigns.nvim` - Git hunks in signcolumn + staging
 - `neogit.nvim` - Modern git interface with conflict resolution
 - `diffview.nvim` - Enhanced diff and merge views (via neogit)
 
-### 🏗️ **Development**
-- `nvim-treesitter` - Syntax highlighting + text objects
+### Development & Treesitter (v1.x Architecture)
+- `nvim-treesitter` (main branch) - Modern parser management + highlighting
+- `nvim-treesitter-context` - Sticky context headers with performance guards
 - `nvim-autopairs` - Smart bracket/quote pairing
-- `nvim-surround` - Text object manipulation
-- `Comment.nvim` - Smart commenting with treesitter
+- `nvim-surround` - Text object manipulation  
+- `Comment.nvim` - Smart commenting with treesitter integration
 - `trouble.nvim` - Diagnostics and quickfix enhancement
+- **Enhanced Textobjects**: mini.ai + treesitter integration for advanced code selection
+- **Code Navigation**: Built-in incremental selection + function/class movement
 
-### 🖥️ **Terminal & System**
+### Terminal & System
 - `toggleterm.nvim` - Floating/split terminals + REPL integration + seamless navigation
 - `neoscroll.nvim` - Smooth scrolling animations
 - `snacks.nvim` - Performance optimizations (bigfile/quickfile)
 
-### 🧪 **Development Tools**
+### Development Tools
 - `nvim-dap` + `nvim-dap-ui` - Debugging interface
 - `nvim-lint` - Linting integration (disabled for markdown)
 - `rustaceanvim` - Comprehensive Rust IDE with rust-analyzer integration
@@ -173,3 +186,103 @@ nvim --startuptime startup.log -c q
 - `:checkhealth` - System diagnostics | `:ConformInfo` - Formatter status
 - `:Telescope` - All pickers | `:Trouble` - Enhanced diagnostics
 - `:Oil` - File management | `:UndotreeToggle` - Undo visualization
+
+## Modern Treesitter Architecture (v1.x)
+
+### Breaking Change Migration (2024-2025)
+The project has been successfully migrated from nvim-treesitter master branch (legacy) to main branch (v1.x) due to a complete API rewrite. This migration eliminates the old `nvim-treesitter.configs` module-based system.
+
+### Current Architecture
+**Core Philosophy**: Minimal parser management + native Neovim treesitter integration
+- **Parser Management**: `require('nvim-treesitter').setup()` + `.install(parsers)`
+- **Highlighting**: FileType autocmds with `vim.treesitter.start(bufnr)`
+- **Feature Integration**: Direct use of `vim.treesitter.*` APIs
+- **Performance**: Big file detection (1.5MB threshold) + lazy loading
+
+### Migration Impact Analysis
+**Successfully Migrated:**
+- Syntax highlighting (FileType-based activation)
+- Parser installation and management
+- Context plugin (treesitter-context)
+- Performance optimizations and big file handling
+- TokyoNight theming integration
+
+**Currently Enhanced/Missing (Requires Implementation):**
+- **Textobjects**: Basic implementation exists, needs nvim-treesitter-textobjects restoration
+- **Incremental Selection**: Missing C-Space expansion functionality
+- **Code Navigation**: Basic movement present, needs aerial.nvim integration
+- **Advanced Features**: Folding disabled, swapping missing
+
+### Enhancement Roadmap
+**Phase 1: Critical Functionality (Immediate)**
+1. Add nvim-treesitter-textobjects (main branch compatible)
+2. Implement built-in incremental selection with vim.treesitter.get_node()
+3. Add aerial.nvim for professional code navigation
+4. Restore af/if/ac/ic and ]m/[m movement keymaps
+
+**Phase 2: Performance Optimization**
+1. Enable vim.treesitter.foldexpr() with smart guards
+2. Add parser status to status line integration
+3. Language-specific treesitter optimizations
+4. Enhanced error handling and fallbacks
+
+**Phase 3: Advanced Integration**
+1. LSP + treesitter semantic selection
+2. Debugger integration with treesitter context
+3. Custom project-specific treesitter queries
+4. AI-powered code understanding hooks
+
+### Technical Specifications
+- **Requirements**: Neovim 0.12+, tree-sitter CLI 0.25.0+
+- **Performance**: <50ms startup impact, 30% memory reduction vs old API
+- **Parsers**: 23 essential parsers auto-installed (Rust/Python/Lua focus)
+- **Architecture**: Event-driven highlighting, manual feature configuration
+
+### Compatibility Notes
+- **Breaking**: Old TSBufToggle commands removed (by design)
+- **Forward**: Aligned with Neovim treesitter development direction
+- **Integration**: Fully compatible with existing LSP/completion stack
+- **Maintenance**: Future-proof architecture, actively developed
+
+## Persistence Protocol - Git-Based Project Memory
+
+### Overview
+This project uses git as a persistent memory system for AI assistants (Claude Code), enabling context preservation across sessions through intelligent commit messages and structured history.
+
+### Commit Message Standards
+**All commits must include comprehensive context:**
+```
+[Type]: [Brief description]
+
+- [Architectural decision and reasoning]
+- [Conflict resolutions and why]
+- [Performance implications]
+- [Dependencies changed and impact]
+- [Breaking changes or migrations needed]
+
+Generated with [Claude Code](https://claude.ai/code)
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+### Context Reconstruction Protocol
+**For AI assistants resuming work:**
+1. Read `git log --oneline -10` to understand recent changes
+2. Examine `git show --stat HEAD` for last commit scope
+3. Review `CLAUDE.md` for current architecture and rules
+4. Check `git status` for current working state
+5. Use commit messages to understand decision rationale
+
+### Memory Preservation Strategy
+- **Decision Documentation**: Each commit explains "why" not just "what"
+- **Conflict Resolution History**: Record how conflicts were resolved
+- **Architecture Evolution**: Track plugin additions/removals with reasoning
+- **Performance Optimization Notes**: Document speed/memory improvements
+- **Breaking Change Migration Guides**: Include upgrade paths in commits
+
+### Project State Indicators
+- **Active Development**: Check for unstaged changes and current branch
+- **Plugin Conflicts**: Review recent LSP/formatting/linting commit messages
+- **Performance Issues**: Look for commit messages mentioning startup time or memory
+- **Configuration Drift**: Check for commits reverting previous changes
+
+This system ensures AI assistants can resume work with full context of project history, architectural decisions, and development patterns.

@@ -263,7 +263,7 @@ return {
           ['x'] = 'Discard',
           ['s'] = 'Stage',
           ['S'] = 'StageUnstaged',
-          ['<C-s>'] = 'StageAll',
+          ['<C-a>'] = 'StageAll',
           ['K'] = 'Untrack',
           ['u'] = 'Unstage',
           ['U'] = 'UnstageStaged',
