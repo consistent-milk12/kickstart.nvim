@@ -1,114 +1,57 @@
-# CLAUDE.md
+# CLAUDE.md - Ultra-Compact Config Reference
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+**Kickstart.nvim** with advanced colorschemes, telescope, gitsigns, and undotree integration.
 
-## Overview
+## Core Setup
+- **Theme**: TokyoNight Night (active) + Kanagawa Wave + advanced styling
+- **Plugin Manager**: lazy.nvim with performance optimizations  
+- **LSP**: Mason + nvim-lspconfig with Blink completion
+- **Required**: Neovim 0.10+, ripgrep, fd, make, Nerd Font
 
-This is a **kickstart.nvim** configuration - a single-file Neovim setup that serves as a starting point for personal customization. It's not a distribution but a documented foundation that users can read, understand, and modify to suit their needs.
+## Key Bindings
 
-## Key Architecture
+### Search (Telescope)
+- `<leader>sf` - Find files | `<leader>sg` - Live grep | `<leader>sb` - Buffers
+- `<leader>sh` - Help | `<leader>sk` - Keymaps | `<leader>sc` - Colorschemes  
+- `<leader>sr` - Resume | `<leader>s.` - Recent files | `<leader>su` - Undo tree
+- `<leader>/` - Fuzzy search buffer | `<leader>sn` - Search Neovim config
+- **In Telescope**: `Alt-o` - Reveal in Oil | `Alt-O` - Open directory in Oil
 
-### Core Components
+### Git (GitSigns)
+- `]c/[c` - Next/prev hunk | `]C/[C` - Last/first hunk
+- `<leader>hs/hr` - Stage/reset hunk | `<leader>hS/hR` - Stage/reset buffer
+- `<leader>hp` - Preview hunk | `<leader>hb` - Blame line
+- `<leader>hd` - Diff index | `<leader>hD` - Diff HEAD~1
+- `<leader>tb` - Toggle blame | `<leader>ts` - Toggle signs
 
-- **Single-file configuration**: The main config is entirely contained in `init.lua` (~1017 lines)
-- **Plugin management**: Uses `lazy.nvim` for plugin management with lazy loading
-- **LSP integration**: Built-in Language Server Protocol support via `nvim-lspconfig`, Mason, and Blink
-- **Modular plugin system**: Optional plugins in `lua/kickstart/plugins/` (commented out by default)
-- **Custom extensions**: User plugins can be added via `lua/custom/plugins/`
+### Undotree
+- `<leader>u` - Toggle undo tree | `j/k` - Navigate states | `q` - Close
 
-### Plugin Architecture
+### LSP  
+- `grn` - Rename | `gra` - Code action | `grr` - References
+- `grd` - Definition | `gri` - Implementation | `gO` - Symbols
 
-The configuration follows a specific pattern:
-1. Core Neovim options and keymaps are set first
-2. `lazy.nvim` is bootstrapped and configured
-3. Plugins are defined in a single table with dependencies properly structured
-4. Each plugin configuration includes comprehensive comments explaining functionality
+### File Management (Oil.nvim)
+- `-` - Open parent directory | `<leader>fe` - Float at project root
+- `<leader>fE` - Float here | `<leader>o` - Toggle float | `<leader>fz` - Zoxide jump
+- `<leader>fo` - Reveal current file | `<leader>fO` - Open CWD in Oil
+- **In Oil**: `q` - Close | `r` - Refresh | `gd` - Toggle details | `yp/yP` - Copy path
 
-## Common Commands
+## Plugin Files
+- `colorscheme.lua` - TokyoNight Night + Kanagawa + Undotree integration
+- `telescope.lua` - Advanced search with extensions (live_grep_args, frecency, undo, etc.)
+- `gitsigns.lua` - Comprehensive git workflow with advanced keymaps
+- `oil.lua` - Modern file explorer with git/LSP integration (replaces neo-tree)
+- Main config in `init.lua` (~1000 lines)
 
-### Neovim Management
-- `nvim` - Start Neovim (will auto-install plugins on first run)
-- `:Lazy` - View plugin status, update, or manage plugins
-- `:Lazy update` - Update all plugins
-- `:Mason` - Manage LSP servers, formatters, and linters
-- `:checkhealth` - Run health checks for configuration issues
-- `:checkhealth kickstart` - Run kickstart-specific health check
+## Advanced Features
+- **Colorschemes**: Full TokyoNight integration with plugin-specific highlights
+- **Telescope**: Live grep args, file browser, frecency, undo tree, DAP integration
+- **GitSigns**: Visual staging, blame, diff views, quickfix integration, text objects
+- **Oil**: LSP-aware file ops, git decorations, SSH support, trash integration
+- **Undotree**: Persistent undo with TokyoNight styling and smart navigation
+- **Performance**: Compilation, caching, lazy loading, startup <100ms target
 
-### Development Workflow
-- `<space>sh` - Search help documentation (Telescope)
-- `<space>sf` - Search files (Telescope)  
-- `<space>sg` - Live grep search (Telescope)
-- `<space>sn` - Search Neovim config files
-- `<leader>f` - Format buffer using conform.nvim
-- `:ConformInfo` - View formatter information
-
-### LSP Commands
-- `grn` - Rename symbol
-- `gra` - Code action  
-- `grr` - Find references
-- `grd` - Go to definition
-- `gri` - Go to implementation
-- `grt` - Go to type definition
-- `gO` - Document symbols
-- `gW` - Workspace symbols
-
-## Configuration Structure
-
-### Core Files
-- `init.lua` - Main configuration file containing all setup
-- `lazy-lock.json` - Plugin version lockfile (should be tracked in git)
-- `lua/kickstart/health.lua` - Health check utilities
-- `lua/custom/plugins/init.lua` - User custom plugins (empty by default)
-
-### Optional Plugins
-Located in `lua/kickstart/plugins/` (uncommented to enable):
-- `debug.lua` - DAP debugging setup
-- `lint.lua` - Additional linting via nvim-lint  
-- `autopairs.lua` - Automatic bracket pairing
-- `neo-tree.lua` - File explorer
-- `gitsigns.lua` - Enhanced git integration
-- `indent_line.lua` - Indentation guides
-
-### Key Design Principles
-
-1. **Educational**: Every line is documented to help users learn
-2. **Minimal**: Includes only essential plugins and functionality
-3. **Self-contained**: Single file that's easy to understand and modify
-4. **Extensible**: Clear patterns for adding new plugins and configurations
-5. **Dependency management**: Uses Mason for automatic LSP/tool installation
-
-## Customization Guidelines
-
-### Adding New Plugins
-Add plugins to the main `require('lazy').setup({})` table in `init.lua`, or create files in `lua/custom/plugins/` and uncomment the import line.
-
-### LSP Configuration  
-Edit the `servers` table in the LSP configuration section around line 673. Use Mason to automatically install servers.
-
-### Keymaps
-Custom keymaps should be added after the existing keymap sections, following the established patterns with descriptions.
-
-### File Organization
-- Keep the single-file approach initially for learning
-- Consider splitting into modules only after understanding the full configuration
-- Use `lua/custom/` for personal additions to avoid merge conflicts
-
-## External Dependencies
-
-### Required
-- Neovim 0.10+ (stable or nightly)
-- git, make, unzip, C compiler (gcc)
-- ripgrep (rg) for telescope searching
-- fd-find for improved file searching
-
-### Optional  
-- Nerd Font for icons (set `vim.g.have_nerd_font = true`)
-- Clipboard tool (xclip/xsel/win32yank)
-- Language-specific tools (npm for TypeScript, go for Golang, etc.)
-
-## Health and Troubleshooting
-
-- Run `:checkhealth` for comprehensive system diagnostics
-- Use `:checkhealth kickstart` for configuration-specific checks
-- Check Mason status with `:Mason` if LSP servers aren't working
-- Verify external dependencies are installed and accessible
+## Management
+- `:Lazy` - Plugin management | `:Mason` - LSP tools | `:checkhealth` - Diagnostics
+- `:KanagawaCompile` - Compile colorscheme | `:UndotreeToggle` - Undo visualization

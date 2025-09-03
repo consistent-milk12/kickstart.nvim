@@ -5,7 +5,7 @@ return {
     event = 'VeryLazy',
     priority = 1000,
     config = function()
-      require('tiny-inline-diagnostic').setup({
+      require('tiny-inline-diagnostic').setup {
         preset = 'modern', -- or 'classic', 'minimal', 'powerline', etc
         options = {
           -- Show source if there are multiple diagnostic sources
@@ -31,7 +31,7 @@ return {
           vertical = ' │',
           vertical_end = ' └',
         },
-      })
+      }
     end,
   },
 
@@ -73,7 +73,7 @@ return {
       },
     },
     config = function()
-      require('trouble').setup({
+      require('trouble').setup {
         -- Automatically close trouble when there are no items
         auto_close = true,
         -- Automatically focus the trouble window when opened
@@ -84,6 +84,8 @@ return {
         indent_guides = true,
         -- Maximum height for the trouble window
         max_items = 200,
+        -- Disable treesitter integration to prevent errors
+        use_diagnostic_signs = true,
         -- Window configuration
         win = {
           border = 'rounded',
@@ -104,7 +106,11 @@ return {
             },
           },
         },
-      })
+        -- Disable treesitter decorations that may cause errors
+        decorations = {
+          treesitter = false,
+        },
+      }
     end,
   },
 }
