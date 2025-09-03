@@ -25,7 +25,7 @@ return {
         right_mouse_command = 'bdelete! %d',
         left_mouse_command = 'buffer %d',
         middle_mouse_command = nil,
-        
+
         -- Visual style
         indicator = {
           icon = '▎', -- This should be '▎'
@@ -36,22 +36,22 @@ return {
         close_icon = '',
         left_trunc_marker = '',
         right_trunc_marker = '',
-        
+
         -- Tab style and sizing
         max_name_length = 30,
         max_prefix_length = 30,
         truncate_names = true,
         tab_size = 21,
         separator_style = 'slant', -- Looks modern with TokyoNight
-        
+
         -- Features
         diagnostics = 'nvim_lsp',
         diagnostics_update_in_insert = false,
         diagnostics_indicator = function(count, level, diagnostics_dict, context)
-          local icon = level:match('error') and ' ' or ' '
+          local icon = level:match 'error' and ' ' or ' '
           return ' ' .. icon .. count
         end,
-        
+
         -- Buffer organization
         show_buffer_icons = true,
         show_buffer_close_icons = true,
@@ -60,7 +60,7 @@ return {
         show_duplicate_prefix = true,
         persist_buffer_sort = true,
         move_wraps_at_ends = false,
-        
+
         -- Offset configuration for sidebars
         offsets = {
           {
@@ -76,25 +76,22 @@ return {
             separator = true,
           },
         },
-        
+
         -- Color and theme integration
         color_icons = true,
         get_element_icon = function(element)
-          local icon, hl = require('nvim-web-devicons').get_icon_by_filetype(
-            element.filetype,
-            { default = false }
-          )
+          local icon, hl = require('nvim-web-devicons').get_icon_by_filetype(element.filetype, { default = false })
           return icon, hl
         end,
-        
+
         -- Buffer sorting
         sort_by = 'insert_after_current',
-        
+
         -- Custom filter to hide certain filetypes
         custom_filter = function(buf_number, buf_numbers)
           -- Filter out by buffer name
           if vim.fn.bufname(buf_number) ~= '' then
-            if vim.fn.bufname(buf_number):match('NvimTree') then
+            if vim.fn.bufname(buf_number):match 'NvimTree' then
               return false
             end
           end
@@ -104,7 +101,7 @@ return {
           end
           return true
         end,
-        
+
         -- Hover functionality
         hover = {
           enabled = true,
@@ -112,24 +109,24 @@ return {
           reveal = { 'close' },
         },
       },
-      
+
       -- Highlights for TokyoNight integration
       highlights = require('bufferline').highlights or {},
     }
-    
+
     -- Apply TokyoNight highlights when colorscheme loads
     vim.api.nvim_create_autocmd('ColorScheme', {
       pattern = 'tokyonight*',
       callback = function()
         local colors = require('tokyonight.colors').setup()
-        
+
         -- Custom bufferline highlights for TokyoNight
-        vim.api.nvim_set_hl(0, 'BufferLineIndicatorSelected', { 
-          fg = colors.blue, 
-          bg = colors.bg 
+        vim.api.nvim_set_hl(0, 'BufferLineIndicatorSelected', {
+          fg = colors.blue,
+          bg = colors.bg,
         })
-        vim.api.nvim_set_hl(0, 'BufferLineFill', { 
-          bg = colors.bg_statusline 
+        vim.api.nvim_set_hl(0, 'BufferLineFill', {
+          bg = colors.bg_statusline,
         })
         vim.api.nvim_set_hl(0, 'BufferLineBufferSelected', {
           fg = colors.fg,
@@ -169,20 +166,21 @@ return {
         })
       end,
     })
-    
+
     -- Apply highlights immediately if TokyoNight is loaded
-    if vim.g.colors_name and vim.g.colors_name:match('tokyonight') then
+    if vim.g.colors_name and vim.g.colors_name:match 'tokyonight' then
       vim.cmd('doautocmd ColorScheme ' .. vim.g.colors_name)
     end
-    
+
     -- Auto-close empty unnamed buffers
     vim.api.nvim_create_autocmd('BufDelete', {
       callback = function()
-        local buffers = vim.fn.getbufinfo({ buflisted = 1 })
+        local buffers = vim.fn.getbufinfo { buflisted = 1 }
         if #buffers == 1 and buffers[1].name == '' and not buffers[1].changed then
-          vim.cmd('enew')
+          vim.cmd 'enew'
         end
       end,
     })
   end,
 }
+

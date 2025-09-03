@@ -199,20 +199,8 @@ return {
     -- Initialize Noice with our configuration
     require('noice').setup(noice_opts)
 
-    -- Ensure LSP functions are properly overridden to prevent warnings
-    pcall(function()
-      -- Force override these functions to prevent Noice warnings
-      local original_convert = vim.lsp.util.convert_input_to_markdown_lines
-      local original_stylize = vim.lsp.util.stylize_markdown
-
-      vim.lsp.util.convert_input_to_markdown_lines = function(...)
-        return require('noice').redirect(original_convert(...))
-      end
-
-      vim.lsp.util.stylize_markdown = function(...)
-        return require('noice').redirect(original_stylize(...))
-      end
-    end)
+    -- LSP function overrides are handled by noice.setup() via lsp.override config
+    -- No additional manual overrides needed
 
     -- Load Telescope extension for Noice (if installed)
     pcall(function()

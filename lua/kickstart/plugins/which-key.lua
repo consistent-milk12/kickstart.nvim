@@ -18,7 +18,7 @@ return { -- Enhanced which-key with comprehensive documentation and visual impro
       { '[', mode = 'n' }, -- Previous operations
       { 'c', mode = { 'n', 'v' } }, -- Change operations with text objects
       { 'd', mode = { 'n', 'v' } }, -- Delete operations with text objects
-      { 'y', mode = { 'n', 'v' } }, -- Yank operations with text objects
+      { 'y', mode = 'n' }, -- Yank operations with text objects (normal mode only)
     },
     
     -- Enhanced icons and styling
